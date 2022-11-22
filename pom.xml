@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>io.github.jpcasas.ibm.plugin.pom</groupId>
 		<artifactId>ibm-pom-parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.jpcasas.ibm.plugin</groupId>
@@ -12,8 +12,15 @@
 	
 	<name>ibm-maven-plugin</name>
     <description>Plugin mande for IBM ACE MQ AND APIC Projects to support build and deployment cycle</description>
-    <url>https://github.com/jpcasas/ibm-maven-tools.git</url>
+    <url>https://github.com/jpcasas/ibm-maven-plugin.git</url>
     
+	<scm>
+        <connection>scm:git:git://github.com/jpcasas/ibm-maven-plugin.git</connection>
+        <developerConnection>scm:git:https://github.com/jpcasas/ibm-maven-plugin.git</developerConnection>
+        <url>http://github.com/jpcasas/ibm-maven-plugin/tree/master</url>
+      <tag>HEAD</tag>
+  </scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
