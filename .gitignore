@@ -1,0 +1,22 @@
+.metadata/
+*.class
+**/target/
+target/**/*
+**/target/*
+*.iml
+*.log
+.idea/**/*
+.idea/*
+*.iws
+/out/
+.idea_modules/
+atlassian-ide-plugin.xml
+.vscode/*
+*.code-workspace
+# Local History for Visual Studio Code
+.history/
+**.factorypath**
+.settings
+**/*.classpath
+**/*.factorypath
+**/*.settings

@@ -1,0 +1,31 @@
+package com.consol.citrus;
+
+import com.consol.citrus.annotations.CitrusTest;
+import com.consol.citrus.dsl.junit.JUnit4CitrusTestRunner;
+import org.junit.Test;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import com.consol.citrus.http.client.HttpClient;
+
+/**
+ *
+ *
+ * @author Juan
+ * @since 2020-12-28
+ */
+@Configuration
+public class {{ArtifactId}}IT extends JUnit4CitrusTestRunner {
+
+    @Autowired
+    private HttpClient aceClient;
+
+    @CitrusTest
+    @Test
+    public void {{ArtifactId}}IT() {
+        http(httpActionBuilder -> httpActionBuilder.client(aceClient).send().get("/TestReadOneBVRTOTOBOMPayment"));
+
+        http(httpActionBuilder -> httpActionBuilder.client(aceClient).receive().response(HttpStatus.OK));
+
+    }
+}
