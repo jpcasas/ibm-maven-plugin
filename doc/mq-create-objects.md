@@ -1,1 +1,0 @@
-# Goal ibm:mq-create-objects
