@@ -13,10 +13,10 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
-		<ibm.plugin.version>1.0.1</ibm.plugin.version>
+		<ibm.plugin.version>1.0.2</ibm.plugin.version>
 	</properties>
 
-	s
+	
 	<build>
 		<plugins>
 			<plugin>
