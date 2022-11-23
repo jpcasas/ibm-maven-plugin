@@ -47,23 +47,23 @@ mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.2:generate-pom
 
 ## List of goals
 
-| Goal                      | Properties                           | Description                                                                     | Example                       |
-| ------------------------- | ------------------------------------ | ------------------------------------------------------------------------------- | ----------------------------- |
-| ibm:generate-pom          | [here](doc/generate-pom.md)          | Creates a pom file for a project                                                | mvn ibm:generate-pom          |
-| ibm:ace-clean             | [here](doc/ace-clean.md)             | clean all target folder except the bar files                                    | mvn ibm:ace-clean             |
-| ibm:ace-deploy            | [here](doc/ace-deploy.md)            | deploys all bar files from a folder                                             | mvn ibm:ace-deploy            |
-| ibm:ace-override          | [here](doc/ace-override.md)          | override the bar file with the properties inside the resource/properties folder | mvn ibm:ace-override          |
-| ibm:ace-bar               | [here](doc/ace-bar.md)               | creates a bar file from the application                                         | mvn ibm:ace-bar               |
-| ibm:ace-policy-bar        | [here](doc/ace-policy-bar.md)        | creates a bar from the ace policy                                               | mvn ibm:ace-policy-bar        |
-| ibm:ace-properties        | [here](doc/ace-properties.md)        | reads/create the overrides from the application                                 | mvn ibm:ace-properties        |
-| ibm:ace-doc               | [here](doc/ace-doc.md)               | creates a markdown documentation of the application                             | mvn ibm:ace-doc               |
-| ibm:ace-tests             | [here](doc/ace-tests.md)             | creates the tests skeleton for postman                                          | mvn ibm:ace-tests             |
-| ibm:ace-policy-properties | [here](doc/ace-policy-properties.md) | creates the properties for replacement on deployment                            | mvn ibm:ace-policy-properties |
-| ibm:ace-policy-package    | [here](doc/ace-policy-package.md)    | creates a bar from the policy                                                   | mvn ibm:ace-policy-package    |
-| ibm:ace-policy-replace    | [here](doc/ace-policy-replace.md)    | replace the values on the policy for the values in the properties               | mvn ibm:ace-policy-replace    |
-| ibm:ace-keywords          | [here](doc/ace-keywords.md)          | create a keywords file and sets the file into the bar                           | mvn ibm:ace-keywords          |
-| ibm:ace-mqs               | [here](doc/ace-mqs.md)               | creates a MQ Script (mqs) reading the nodes from the flows of the application   | mvn ibm:ace-mqs               |
-| ibm:mq-deploy             | [here](doc/mq-deploy.md)             | connects to a MQ and execute the MQ scripts                                     | mvn ibm:mq-deploy             |
+| Goal                          | Properties                                 | Description                                                                     | Examples                                         | stage      |
+| ----------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------ | ---------- |
+| mvn ibm:generate-pom          | [properties](doc/generate-pom.md)          | Creates a pom file for a project                                                | [example](examples/02-BuildGoals/README.md)      | dev        |
+| mvn ibm:ace-clean             | [properties](doc/ace-clean.md)             | clean all target folder except the bar files                                    | [example](examples/02-BuildGoals/README.md)      | dev        |
+| mvn ibm:ace-properties        | [properties](doc/ace-properties.md)        | reads/create the overrides from the application                                 | [example](examples/02-BuildGoals/README.md)      | dev        |
+| mvn ibm:ace-doc               | [properties](doc/ace-doc.md)               | creates a markdown documentation of the application                             | [example](examples/02-BuildGoals/README.md)      | dev        |
+| mvn ibm:ace-tests             | [properties](doc/ace-tests.md)             | creates the tests skeleton for postman                                          | [example](examples/02-BuildGoals/README.md)      | dev        |
+| mvn ibm:ace-policy-properties | [properties](doc/ace-policy-properties.md) | creates the properties for replacement on deployment                            | [example](examples/02-BuildGoals/README.md)      | dev        |
+| mvn ibm:ace-mqs               | [properties](doc/ace-mqs.md)               | creates a MQ Script (mqs) reading the nodes from the flows of the application   | [example](examples/02-BuildGoals/README.md)      | dev        |
+| mvn ibm:ace-override          | [properties](doc/ace-override.md)          | override the bar file with the properties inside the resource/properties folder | [example](examples/02-BuildGoals/README.md)      | build      |
+| mvn ibm:ace-bar               | [properties](doc/ace-bar.md)               | creates a bar file from the application                                         | [example](examples/02-BuildGoals/README.md)      | build      |
+| mvn ibm:ace-policy-bar        | [properties](doc/ace-policy-bar.md)        | creates a bar from the ace policy                                               | [example](examples/02-BuildGoals/README.md)      | build      |
+| mvn ibm:ace-policy-package    | [properties](doc/ace-policy-package.md)    | creates a bar from the policy                                                   | [example](examples/02-BuildGoals/README.md)      | build      |
+| mvn ibm:ace-policy-replace    | [properties](doc/ace-policy-replace.md)    | replace the values on the policy for the values in the properties               | [example](examples/02-BuildGoals/README.md)      | build      |
+| mvn ibm:ace-keywords          | [properties](doc/ace-keywords.md)          | create a keywords file and sets the file into the bar                           | [example](examples/04-DeploymentGoals/README.md) | deployment |
+| mvn ibm:ace-deploy            | [properties](doc/ace-deploy.md)            | deploys all bar files from a folder                                             | [example](examples/04-DeploymentGoals/README.md) | deployment |
+| mvn ibm:mq-deploy             | [properties](doc/mq-deploy.md)             | connects to a MQ and execute the MQ scripts                                     | [example](examples/04-DeploymentGoals/README.md) | deployment |
 
 
 
