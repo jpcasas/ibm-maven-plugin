@@ -1,0 +1,17 @@
+<settings>
+    <pluginGroups>
+        <pluginGroup>io.github.jpcasas.ibm.plugin</pluginGroup>
+        <pluginGroup>org.sonatype.plugins</pluginGroup>
+    </pluginGroups>
+
+    <profiles>
+        <profile>
+            <id>DEV</id>
+            <properties>
+                <ibm.ace.overrideFile>resources/overrides/DEV.properties </ibm.ace.overrideFile>
+                <ibm.ace.host>localhost</ibm.ace.host>
+                <ibm.ace.port>4414</ibm.ace.port>
+            </properties>
+        </profile>
+    </profiles>
+</settings>

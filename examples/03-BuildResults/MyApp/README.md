@@ -15,10 +15,7 @@ Description of project
 | Key | Value |  
 | ----------- |---------|
 | project.build.sourceEncoding     |  UTF-8    |
-| gpg.passphrase     |  casasc7277    |
-| ibm.plugin.version     |  1.0.1    |
-| gpg.keyname     |  0x08AF89EE    |
-| gpg.executable     |  gpg    |
+
 
 ## Content
 ### bar

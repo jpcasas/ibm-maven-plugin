@@ -29,3 +29,6 @@ mvn -f MyPolicy/pom.xml ibm:ace-policy-bar
 Go inside MyPolicy Folder
 mvn ibm:ace-policy-properties
 
+
+git filter-branch --index-filter 'git rm -rf --cached --ignore-unmatch examples/02-BuildGoals/MyApp/README.md' HEAD
+
