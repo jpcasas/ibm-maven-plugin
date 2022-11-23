@@ -366,20 +366,21 @@
 	
 		</profiles>
 	
-		<licenses>
-			<license>
-				<name>GNU General Public License v3.0</name>
-				<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
-			</license>
-		</licenses>
+		
 	
-		<developers>
-			<developer>
-				<name>Juan Pablo Casas</name>
-				<email>jpcasas@pm.me</email>
-				<organization>None</organization>
-				<organizationUrl>https://github.com/jpcasas/</organizationUrl>
-			</developer>
-		</developers>
-	</profiles>
+	<licenses>
+		<license>
+			<name>GNU General Public License v3.0</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Juan Pablo Casas</name>
+			<email>jpcasas@pm.me</email>
+			<organization>None</organization>
+			<organizationUrl>https://github.com/jpcasas/</organizationUrl>
+		</developer>
+	</developers>
 </project>
