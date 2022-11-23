@@ -49,6 +49,7 @@ mvn ibm:generate-pom
 
 | Goal                      | Properties                           | Description                                                                     | Example                       |
 | ------------------------- | ------------------------------------ | ------------------------------------------------------------------------------- | ----------------------------- |
+| ibm:generate-pom          | [here](doc/generate-pom.md)          | Creates a pom file for a project                                                | mvn ibm:generate-pom          |
 | ibm:ace-clean             | [here](doc/ace-clean.md)             | clean all target folder except the bar files                                    | mvn ibm:ace-clean             |
 | ibm:ace-deploy            | [here](doc/ace-deploy.md)            | deploys all bar files from a folder                                             | mvn ibm:ace-deploy            |
 | ibm:ace-override          | [here](doc/ace-override.md)          | override the bar file with the properties inside the resource/properties folder | mvn ibm:ace-override          |
