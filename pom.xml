@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>io.github.jpcasas.ibm.plugin.pom</groupId>
 		<artifactId>ibm-pom-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.3</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.jpcasas.ibm.plugin</groupId>
