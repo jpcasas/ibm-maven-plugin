@@ -35,9 +35,6 @@ public class BarPackage extends AbstractMojo {
 	@Parameter(defaultValue = "false", property = "trace", required = true)
 	private boolean trace;
 
-	@Parameter(defaultValue = "app", property = "type", required = true)
-	private String type;
-
 	@Parameter(defaultValue = ".bar", property = "ibm.ace.extension", required = true)
 	private String extension;
 

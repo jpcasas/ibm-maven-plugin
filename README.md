@@ -41,7 +41,7 @@ add
 Create any ace application / library and inside the project run the command
 
 ```
-mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.2:generate-pom
+mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.3:generate-pom
 
 ```
 
