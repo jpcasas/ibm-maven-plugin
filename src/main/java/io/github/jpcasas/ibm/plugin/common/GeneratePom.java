@@ -84,10 +84,7 @@ public class GeneratePom extends AbstractMojo  implements CommonConstants {
 						throw new MojoExecutionException("Unknown project type");
 					}
 					getLog().info("The type of the project is: " + projectType);
-					if (PROJECT_TYPE_APIC.equals(projectType)) {
-						// Create sources and resources directories
-						createDir(GENERATE_APIC_DIRECTORIES);
-					}
+					
 					// Create the POM file
 					String workspace = new File(System.getProperty("user.dir")).getParentFile().getParentFile()
 							.getName();
