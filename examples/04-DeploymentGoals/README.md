@@ -2,8 +2,8 @@
 
 ## Requirements 
 
-* Configure private or public repositories https://maven.apache.org/guides/mini/guide-configuring-maven.html
-* Configure the profiles for each enviroment in the settings.xml file
+* **(Not Mandatory)** Configure private or public repositories https://maven.apache.org/guides/mini/guide-configuring-maven.html
+* **(Not Mandatory)** Configure the profiles for each enviroment in the settings.xml file
 
 For testing proposes we will start a docker container of ACE 11
 
