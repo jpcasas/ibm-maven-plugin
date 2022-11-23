@@ -30,10 +30,17 @@ mvn -DMQSI_DEV=Juan -DMQSI_VERSION=1.0.0 ibm:ace-keywords
 
 ```
 
-## deploy the bar into a NODE (old way)
+## Deploy the bar into a NODE (old way)
 
 ```
 mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost ibm:ace-deploy
+
+```
+
+## Deploy the bar into a Integration Server
+
+```
+mvn -Dibm.ace.host=localhost -Dibm.ace.port=7600 ibm:ace-deploy
 
 ```
 
@@ -54,11 +61,19 @@ mvn -DMQSI_DEV=Juan -DMQSI_VERSION=1.0.0 ibm:ace-keywords
 
 ```
 
-## deploy the bar into a NODE (old way)
+## Deploy the bar into a NODE (old way)
 
 ```
 mvn -s configuration/settings.xml -Dibm.ace.is=IS -PDEV ibm:ace-deploy
 
 ```
+
+## Deploy the bar into a Integration Server
+
+```
+mvn -s configuration/settings.xml -Dibm.ace.port=7600 -PDEV  ibm:ace-deploy
+
+```
+
 
 

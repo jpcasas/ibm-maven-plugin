@@ -14,6 +14,8 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -705,6 +707,14 @@ public class Tools {
 	public static String cowsay(String message) {
 		cowExecutor.setMessage(message);
 		return cowExecutor.execute();
+	}
+
+    public static String base64(String string) {
+        return Base64.getEncoder().encodeToString(string.getBytes());
+    }
+
+	public static byte[] toByteArray(File bar) throws IOException {
+		return Files.readAllBytes(bar.toPath());
 	}
 
 }

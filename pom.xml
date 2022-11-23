@@ -9,17 +9,17 @@
 	<artifactId>ibm-maven-plugin</artifactId>
 	<version>1.0.3-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
-	
+
 	<name>ibm-maven-plugin</name>
-    <description>Plugin mande for IBM ACE MQ AND APIC Projects to support build and deployment cycle</description>
-    <url>https://github.com/jpcasas/ibm-maven-plugin.git</url>
-    
+	<description>Plugin mande for IBM ACE MQ AND APIC Projects to support build and deployment cycle</description>
+	<url>https://github.com/jpcasas/ibm-maven-plugin.git</url>
+
 	<scm>
-        <connection>scm:git:git://github.com/jpcasas/ibm-maven-plugin.git</connection>
-        <developerConnection>scm:git:https://github.com/jpcasas/ibm-maven-plugin.git</developerConnection>
-        <url>http://github.com/jpcasas/ibm-maven-plugin/tree/master</url>
-      <tag>HEAD</tag>
-  </scm>
+		<connection>scm:git:git://github.com/jpcasas/ibm-maven-plugin.git</connection>
+		<developerConnection>scm:git:https://github.com/jpcasas/ibm-maven-plugin.git</developerConnection>
+		<url>http://github.com/jpcasas/ibm-maven-plugin/tree/master</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,7 +28,7 @@
 		<maven.version>3.6.3</maven.version>
 	</properties>
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
@@ -163,13 +163,19 @@
 			<scope>provided</scope>
 			<!--<optional>true</optional>-->
 		</dependency>
- 
-   <dependency>
-     <groupId>cn.mindstack</groupId>
-     <artifactId>Cowsay</artifactId>
-     <version>1.0</version>
-   </dependency>
- </dependencies>
+		<!-- https://mvnrepository.com/artifact/com.konghq/unirest-java -->
+		<dependency>
+			<groupId>com.konghq</groupId>
+			<artifactId>unirest-java</artifactId>
+			<version>3.13.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.mindstack</groupId>
+			<artifactId>Cowsay</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
 	<build>
 		<pluginManagement>
 			<!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
@@ -215,16 +221,15 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>3.7.1</version>
-				  </plugin>
-				  <plugin>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-project-info-reports-plugin</artifactId>
 					<version>3.0.0</version>
-				  </plugin>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -237,7 +242,7 @@
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.6.0</version>
 				<configuration>
-				  <goalPrefix>ibm</goalPrefix>
+					<goalPrefix>ibm</goalPrefix>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -279,95 +284,92 @@
 				</plugins>
 			</build>
 		</profile>
-		
-			<profile>
-				<id>release</id>
-				<distributionManagement>
-					<snapshotRepository>
-						<id>ossrh</id>
-						<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-					</snapshotRepository>
-					<repository>
-						<id>ossrh</id>
-						<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-					</repository>
-				</distributionManagement>
-				<activation>
-					<activeByDefault>true</activeByDefault>
-				</activation>
-				<build>
-					<plugins>
-						<plugin>
-							<groupId>external.atlassian.jgitflow</groupId>
-							<artifactId>jgitflow-maven-plugin</artifactId>
-							<version>1.0-m5.1</version>
-							<configuration>
-								<username>${env.GIT_USERNAME}</username>
-								<password>${env.GIT_PASSWORD}</password>
-								<allowSnapshots>true</allowSnapshots>
-								<pushFeatures>true</pushFeatures>
-								<enableSshAgent>true</enableSshAgent>
-								<pushReleases>true</pushReleases>
-								<allowUntracked>true</allowUntracked>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-release-plugin</artifactId>
-							<version>2.5.3</version>
-							<configuration>
-								<autoVersionSubmodules>true</autoVersionSubmodules>
-								<useReleaseProfile>false</useReleaseProfile>
-								<releaseProfiles>release</releaseProfiles>
-								<goals>deploy</goals>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.sonatype.plugins</groupId>
-							<artifactId>nexus-staging-maven-plugin</artifactId>
-							<version>1.6.13</version>
-							<extensions>true</extensions>
-							<configuration>
-								<serverId>ossrh</serverId>
-								<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-								<autoReleaseAfterClose>true</autoReleaseAfterClose>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-gpg-plugin</artifactId>
-							<version>1.5</version>
-							<executions>
-								<execution>
-									<id>sign-artifacts</id>
-									<phase>verify</phase>
-									<goals>
-										<goal>sign</goal>
-									</goals>
-									<configuration>
-										<keyname>${gpg.keyname}</keyname>
-										<passphraseServerId>${gpg.keyname}</passphraseServerId>
-									</configuration>
-								</execution>
-							</executions>
-						</plugin>
-						
-						
-	
-					</plugins>
-	
-					
-	
-				</build>
-				
-				
-			</profile>
-	
-	
-		</profiles>
-	
-		
-	
+
+		<profile>
+			<id>release</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>ossrh</id>
+					<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>external.atlassian.jgitflow</groupId>
+						<artifactId>jgitflow-maven-plugin</artifactId>
+						<version>1.0-m5.1</version>
+						<configuration>
+							<username>${env.GIT_USERNAME}</username>
+							<password>${env.GIT_PASSWORD}</password>
+							<allowSnapshots>true</allowSnapshots>
+							<pushFeatures>true</pushFeatures>
+							<enableSshAgent>true</enableSshAgent>
+							<pushReleases>true</pushReleases>
+							<allowUntracked>true</allowUntracked>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>deploy</goals>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.13</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<keyname>${gpg.keyname}</keyname>
+									<passphraseServerId>${gpg.keyname}</passphraseServerId>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+
+				</plugins>
+
+
+			</build>
+
+
+		</profile>
+
+
+	</profiles>
+
+
 	<licenses>
 		<license>
 			<name>GNU General Public License v3.0</name>
