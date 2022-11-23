@@ -4,10 +4,13 @@
 
 cd MyApp
 
-```
-* run ibm generate-pom to mavenize the project
+
 ```
 
-mvn ibm:generate-pom
+* run ibm generate-pom to mavenize the project
+
+```
+
+mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.2:generate-pom
 
 ```
