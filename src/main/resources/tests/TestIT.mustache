@@ -23,7 +23,7 @@ public class {{ArtifactId}}IT extends JUnit4CitrusTestRunner {
     @CitrusTest
     @Test
     public void {{ArtifactId}}IT() {
-        http(httpActionBuilder -> httpActionBuilder.client(aceClient).send().get("/TestReadOneBVRTOTOBOMPayment"));
+        http(httpActionBuilder -> httpActionBuilder.client(aceClient).send().get("/TestEndPoint"));
 
         http(httpActionBuilder -> httpActionBuilder.client(aceClient).receive().response(HttpStatus.OK));
 

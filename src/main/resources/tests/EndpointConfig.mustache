@@ -13,7 +13,7 @@ public class EndpointConfig {
 
     @Bean
     public HttpClient aceClient() {
-        return CitrusEndpoints.http().client().requestUrl("http://lge1in103d:7081").build();
+        return CitrusEndpoints.http().client().requestUrl("http://<host>:7081").build();
     }
 
     @Bean

@@ -5,10 +5,7 @@ import java.util.List;
 
 public interface CommonConstants {
 
-        String ORG_DEV = "tcs-dev";
-        String ORG_QA = "tcs-qa";
-        String ORG_ACP = "tcs-acp";
-        String ORG_PRD = "tcs";
+       
 
         List<String> ORG_WITH_LIFE_CYCLES = Arrays.asList(ORG_ACP, ORG_PRD);
 
