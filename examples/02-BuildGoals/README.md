@@ -26,5 +26,6 @@ mvn ibm:ace-tests
 mvn -f MyPolicy/pom.xml ibm:ace-policy-bar
 
 ## create properties for policy
-mvn -f MyPolicy/pom.xml ibm:ace-policy-properties
+Go inside MyPolicy Folder
+mvn ibm:ace-policy-properties
 

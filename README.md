@@ -41,7 +41,7 @@ add
 Create any ace application / library and inside the project run the command
 
 ```
-mvn ibm:generate-pom
+mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.2:generate-pom
 
 ```
 
@@ -57,13 +57,12 @@ mvn ibm:generate-pom
 | ibm:ace-policy-bar        | [here](doc/ace-policy-bar.md)        | creates a bar from the ace policy                                               | mvn ibm:ace-policy-bar        |
 | ibm:ace-properties        | [here](doc/ace-properties.md)        | reads/create the overrides from the application                                 | mvn ibm:ace-properties        |
 | ibm:ace-doc               | [here](doc/ace-doc.md)               | creates a markdown documentation of the application                             | mvn ibm:ace-doc               |
-| ibm:ace-mqs               | [here](doc/ace-mqs.md)               | creates a MQ Script (mqs) reading the nodes from the flows of the application   | mvn ibm:ace-mqs               |
 | ibm:ace-tests             | [here](doc/ace-tests.md)             | creates the tests skeleton for postman                                          | mvn ibm:ace-tests             |
 | ibm:ace-policy-properties | [here](doc/ace-policy-properties.md) | creates the properties for replacement on deployment                            | mvn ibm:ace-policy-properties |
 | ibm:ace-policy-package    | [here](doc/ace-policy-package.md)    | creates a bar from the policy                                                   | mvn ibm:ace-policy-package    |
 | ibm:ace-policy-replace    | [here](doc/ace-policy-replace.md)    | replace the values on the policy for the values in the properties               | mvn ibm:ace-policy-replace    |
 | ibm:ace-keywords          | [here](doc/ace-keywords.md)          | create a keywords file and sets the file into the bar                           | mvn ibm:ace-keywords          |
-| ibm:mq-create-objects     | [here](doc/mq-create-objects.md)     | connects to a MQ and execute the MQ scripts                                     | mvn ibm:mq-create-objects     |
+| ibm:ace-mqs               | [here](doc/ace-mqs.md)               | creates a MQ Script (mqs) reading the nodes from the flows of the application   | mvn ibm:ace-mqs               |
 | ibm:mq-deploy             | [here](doc/mq-deploy.md)             | connects to a MQ and execute the MQ scripts                                     | mvn ibm:mq-deploy             |
 
 
