@@ -4,16 +4,16 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<parent>
-		<groupId>io.github.jpcasas.ibm.plugin</groupId>
+		<groupId>io.github.jpcasas.ibm.plugin.pom</groupId>
 		<artifactId>ibm-pom-ace</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.2</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>dev.jpcasas.integration.ace</groupId>
 	<artifactId>{{artifactId}}</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<properties>
-		<ibm.plugin.version>1.0.0</ibm.plugin.version>
+		<ibm.plugin.version>1.0.1</ibm.plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>

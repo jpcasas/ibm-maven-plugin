@@ -2,9 +2,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
-		<groupId>io.github.jpcasas.ibm.plugin</groupId>
+		<groupId>io.github.jpcasas.ibm.plugin.pom</groupId>
 		<artifactId>ibm-pom-ace</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.2</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>dev.jpcasas.integration.ace</groupId>
