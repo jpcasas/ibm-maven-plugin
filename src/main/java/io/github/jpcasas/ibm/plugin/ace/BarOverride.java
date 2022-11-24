@@ -37,8 +37,7 @@ public class BarOverride extends AbstractMojo {
 	@Parameter(property = "ibm.ace.bar")
 	private File barFileName;
 
-	@Parameter(property = "ibm.ace.projectFolder")
-	private File projectFolder;
+	
 
 	@Parameter(property = "ibm.ace.override.validate", defaultValue = "false")
 	private boolean validate;

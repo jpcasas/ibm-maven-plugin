@@ -58,7 +58,7 @@ mvn package ibm:ace-bar ibm:ace-clean
 
 ### **deploy bar**
 
-Stand alone integration server Topology
+Integration server Topology
 ```
  mvn -Dibm.ace.host=<host> -Dibm.ace.port=<port> ibm:ace-deploy
 
@@ -97,7 +97,6 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 | mvn ibm:ace-override          | [properties](doc/ace-override.md)          | override the bar file with the properties inside the resource/properties folder | [example](examples/02-BuildGoals)      | build      |
 | mvn ibm:ace-bar               | [properties](doc/ace-bar.md)               | creates a bar file from the application                                         | [example](examples/02-BuildGoals)      | build      |
 | mvn ibm:ace-policy-bar        | [properties](doc/ace-policy-bar.md)        | creates a bar from the ace policy                                               | [example](examples/02-BuildGoals)      | build      |
-| mvn ibm:ace-policy-package    | [properties](doc/ace-policy-package.md)    | creates a bar from the policy                                                   | [example](examples/02-BuildGoals)      | build      |
 | mvn ibm:ace-policy-replace    | [properties](doc/ace-policy-replace.md)    | replace the values on the policy for the values in the properties               | [example](examples/02-BuildGoals)      | build      |
 | mvn ibm:ace-keywords          | [properties](doc/ace-keywords.md)          | create a keywords file and sets the file into the bar                           | [example](examples/04-DeploymentGoals) | deployment |
 | mvn ibm:ace-deploy            | [properties](doc/ace-deploy.md)            | deploys all bar files from a folder                                             | [example](examples/04-DeploymentGoals) | deployment |

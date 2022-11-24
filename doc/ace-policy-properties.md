@@ -1,12 +1,9 @@
 # Goal ibm:ace-policy-properties
 
-## Required Parameters
-
-| Name           | Type    | Since | Description                                                                  |
-| -------------- | ------- | ----- | ---------------------------------------------------------------------------- |
-| deployAsSource | boolean | 1.0.0 | Parameter mqsipackagebar deployAsSource **User property is:** deployAsSource |
+Create properties from policy file in order to replace in deployment time (like override bar)
 
 ## Optional Parameters
 
-| Name | Type | Since | Description |
-| ---- | ---- | ----- | ----------- |
+| Name               | Type   | Default     | Since | Description                |
+| ------------------ | ------ | ----------- | ----- | -------------------------- |
+| ibm.ace.pextension | String | .properties | 1.0.0 | suffix for generated files |

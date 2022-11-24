@@ -1,5 +1,6 @@
 # Goal ibm:ace-deploy
 
+Search and deploy bar files
 
 ## Required Parameters
 
