@@ -1,13 +1,32 @@
 # Goal ibm:ace-doc
 
+Generate README.md for the project 
 
-## Required Parameters
+here's the mustache template for the README
 
-| Name           | Type    | Since | Description                                                                  |
-| -------------- | ------- | ----- | ---------------------------------------------------------------------------- |
-| deployAsSource | boolean | 1.0.0 | Parameter mqsipackagebar deployAsSource **User property is:** deployAsSource |
+```
+{{PROJECTNAME}}
 
-## Optional Parameters
+Description of project
 
-| Name | Type | Since | Description |
-| ---- | ---- | ----- | ----------- |
+Information
+
+| | |
+| -----------|---------| | Git Url | {{GITURL}} | | Nexus url | {{NEXUSURL}} | | Group Id | {{GROUPID}} | | Current Version | {{VERSION}} |
+
+Properties
+
+| Key | Value |
+| ----------- |---------| {{#properties}} | {{key}} | {{value}} | {{/properties}}
+
+Content
+
+{{#content}}
+
+{{type}}
+
+{{#files}}
+
+{{schema}} {{/files}} {{/content}}
+
+```
