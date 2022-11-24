@@ -42,20 +42,20 @@ add
 
 Create any ace application / library and inside the project run the command
 
-* 1. **Mavenize**
+1. **Mavenize**
 
 ```
 mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.3:generate-pom
 
 ```
-* 2. **build bar**
+2. **build bar**
 
 ```
 mvn package ibm:ace-bar ibm:ace-clean
 
 ```
 
-* 3. **deploy bar**
+3. **deploy bar**
 
 In a stand alone instegration server
 ```
