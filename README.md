@@ -1,6 +1,6 @@
 # ibm-maven-plugin
 
-# Quick Start
+# Requirements
 
 ## Install IBM Libraries
 
@@ -36,12 +36,37 @@ add
 
 ```
 
+# Quick Start
+
 ## Create an ACE Application
 
 Create any ace application / library and inside the project run the command
 
+* 1. **Mavenize**
+
 ```
 mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.3:generate-pom
+
+```
+* 2. **build bar**
+
+```
+mvn package ibm:ace-bar ibm:ace-clean
+
+```
+
+* 3. **deploy bar**
+
+In a stand alone instegration server
+```
+ mvn -Dibm.ace.host=<host> -Dibm.ace.port=<port> ibm:ace-deploy
+
+```
+
+Integration Node Topology
+
+```
+mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deploy
 
 ```
 
