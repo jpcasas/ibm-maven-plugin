@@ -58,7 +58,7 @@ mvn package ibm:ace-bar ibm:ace-clean
 
 ### **deploy bar**
 
-In a stand alone instegration server
+Stand alone integration server Topology
 ```
  mvn -Dibm.ace.host=<host> -Dibm.ace.port=<port> ibm:ace-deploy
 
@@ -70,6 +70,18 @@ Integration Node Topology
 mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deploy
 
 ```
+
+# Complete Examples
+
+* generate documentation
+* generate overrides
+* overrides bar
+* add keywords to bar
+* generate mq scripts
+* generate Integration Tests (Beta)
+* Policies build and deployments
+  
+[here the examples](examples/README.md) 
 
 ## List of goals
 
@@ -92,9 +104,13 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 | mvn ibm:mq-deploy             | [properties](doc/mq-deploy.md)             | connects to a MQ and execute the MQ scripts                                     | [example](examples/04-DeploymentGoals) | deployment |
 
 
-# Examples
 
-[here the examples](examples/README.md) 
+
+# Other subjects (WIP)
+
+* Deployment of MQ Objects By SSH or PCF commands
+* Dependecy Management
+* CI Servers templates
 
 
 
