@@ -35,10 +35,6 @@ add
 
 
 ```
-# Examples
-
-[here the examples](examples/README.md) 
-
 
 ## Create an ACE Application
 
@@ -70,7 +66,9 @@ mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.3:generate-pom
 | mvn ibm:mq-deploy             | [properties](doc/mq-deploy.md)             | connects to a MQ and execute the MQ scripts                                     | [example](examples/04-DeploymentGoals) | deployment |
 
 
+# Examples
 
+[here the examples](examples/README.md) 
 
 
 
