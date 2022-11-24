@@ -36,26 +36,27 @@ add
 
 ```
 
-# Quick Start
+# Quick Start 
+build and deploy in 3 steps
 
 ## Create an ACE Application
 
 Create any ace application / library and inside the project run the command
 
-1. **Mavenize**
+### **Mavenize**
 
 ```
 mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.3:generate-pom
 
 ```
-2. **build bar**
+### **build bar**
 
 ```
 mvn package ibm:ace-bar ibm:ace-clean
 
 ```
 
-3. **deploy bar**
+### **deploy bar**
 
 In a stand alone instegration server
 ```
