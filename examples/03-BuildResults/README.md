@@ -18,10 +18,6 @@ mvn ibm:ace-doc
 ## create mqs scripts
 mvn -f MyApp/pom.xml ibm:ace-mqs
 
-## create citrus tests
-Go inside MyApp Folder
-mvn ibm:ace-tests 
-
 ## create a bar for policy
 mvn -f MyPolicy/pom.xml ibm:ace-policy-bar
 
