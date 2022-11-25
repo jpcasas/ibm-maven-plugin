@@ -54,10 +54,10 @@ public class DeployMQScripts extends AbstractMojo {
 	private String separator;
 
 	@Parameter(property = "mq.servers", required = false)
-	public String mqServer;
+	private String mqServer;
 
 	@Parameter(property = "mq.queueManager", required = false)
-	public String queueManagerName;
+	private String queueManagerName;
 
 	@Parameter(defaultValue = "~/.ssh/id_rsa", property = "mq.ssh.privatekeylocation", required = false)
 	private String privateKeyLocation;
