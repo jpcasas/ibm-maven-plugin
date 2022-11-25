@@ -71,7 +71,7 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 
 ```
 
-# Complete Examples
+# Others Examples 
 
 * generate documentation
 * generate overrides
