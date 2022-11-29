@@ -681,24 +681,7 @@ public class Tools {
 		return sb.toString();
 	}
 
-	public static void writeYaml(File subsDir, String string, Object object)
-			throws JsonGenerationException, JsonMappingException, IOException {
-		writeWithJackson(new YAMLFactory(), subsDir, string, object);
-
-	}
-
-	public static void writeJSON(File folder, String filename, Object object)
-			throws JsonGenerationException, JsonMappingException, IOException {
-		writeWithJackson(new JsonFactory(), folder, filename, object);
-	}
-
-	private static void writeWithJackson(JsonFactory factory, File folder, String filename, Object object)
-			throws JsonGenerationException, JsonMappingException, IOException {
-		ObjectMapper om = new ObjectMapper(factory);
-		om.setSerializationInclusion(Include.NON_NULL);
-		om.writeValue(new File(folder, filename), object);
-
-	}
+	
 
 	
 
