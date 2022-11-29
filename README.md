@@ -64,11 +64,7 @@ add
 ```
 # Quick Start toolkit
 
-## Download configurations
-https://github.com/jpcasas/ibm-toolkit-runconf/archive/refs/heads/main.zip
-
-## unzip & Import into the toolkit
-
+[documentation](examples/05-ToolkitConfigurations/README.md)
 
 
 # Quick Start Build and Deploy CLI
