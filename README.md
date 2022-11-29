@@ -12,8 +12,9 @@ This plugin aims to help the developpers with goals like:
 * Maven Dependency features. include your libraries in
 * Works with packagebar. no toolkit need it for build bars (headless builds)
 * MQ SSH Deployment multi-instance topology supported (API & PCF Deployment soon) 
+* Buld & deploy bars.
 
-Coming soon.
+**Coming soon.**
 
 * Creates a jenkins/gitlab pipelines (soon more)
 * APIC Goals
