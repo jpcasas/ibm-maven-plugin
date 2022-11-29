@@ -62,7 +62,7 @@ add
 
 
 ```
-# Quick Start toolkit
+# Quick Start Toolkit
 
 [documentation](examples/05-ToolkitConfigurations/README.md)
 
