@@ -1,5 +1,32 @@
 # ibm-maven-plugin
 
+# About
+This plugin aims to help the developpers with goals like:
+
+* Creates mq scripts from flows (search in all flows MQ Objects to create mq scripts)
+* Creates a basic documentation
+* Easy integration and installation into the toolkit
+* Goal to mavenize the project
+
+**Also provides**
+
+* Maven Dependency features. include your libraries in
+* Works with packagebar. no toolkit need it for build bars (headless builds)
+* MQ SSH Deployment multi-instance topology supported (API & PCF Deployment soon) 
+* Buld & deploy bars.
+
+**Coming soon.**
+
+* Creates a jenkins/gitlab pipelines (soon more)
+* APIC Goals
+* Remove IBM Libs dependencies
+* Docker File and Kubernetes deployment descriptors
+
+**Not supported**
+
+* Build bar of applications that uses java projects (java node) 
+
+
 # Requirements
 
 ## Install IBM Libraries
@@ -104,7 +131,7 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 
 
 
-# Other subjects (WIP)
+# Work in progress documentation
 
 * Deployment of MQ Objects By SSH or PCF commands
 * Dependecy Management
