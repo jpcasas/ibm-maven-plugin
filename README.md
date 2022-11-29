@@ -131,7 +131,7 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 
 
 
-# Other subjects (WIP)
+# Work in progress documentation
 
 * Deployment of MQ Objects By SSH or PCF commands
 * Dependecy Management
