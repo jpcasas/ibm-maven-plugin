@@ -22,6 +22,10 @@ This plugin aims to help the developpers with goals like:
 * Remove IBM Libs dependencies
 * Docker File and Kubernetes deployment descriptors
 
+**Not supported**
+
+* Build bar of applications that uses java projects (java node) 
+
 
 # Requirements
 
