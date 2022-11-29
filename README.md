@@ -6,6 +6,7 @@ This plugin aims to help the developpers with goals like:
 * Creates mq scripts from flows (search in all flows MQ Objects to create mq scripts)
 * Creates a basic documentation
 * Easy integration and installation into the toolkit
+* Goal to mavenize the project
 
 **Also provides**
 
