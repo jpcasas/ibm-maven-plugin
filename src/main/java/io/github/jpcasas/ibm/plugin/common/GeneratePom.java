@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -106,18 +105,6 @@ public class GeneratePom extends AbstractMojo  implements CommonConstants {
 
 	}
 
-	private void createDir(List<String> listDirToCreate) {
-		if (listDirToCreate == null || listDirToCreate.size() == 0) {
-			return;
-		}
-		for (String curDir : listDirToCreate) {
-			File curFileDir = new File(curDir);
-			if (!curFileDir.exists()) {
-				getLog().info("Create the directory: " + curDir);
-				new File(curDir).mkdirs();
-			}
-		}
-	}
 
 	private void createPom(String projectType, String artifactId, String groupId, String workspace) throws IOException {
 		getLog().info("Create the XML pom file...");

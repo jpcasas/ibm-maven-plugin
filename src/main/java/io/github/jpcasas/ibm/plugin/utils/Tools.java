@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -40,12 +39,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
@@ -55,7 +48,6 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -263,7 +255,8 @@ public class Tools {
 			return channel.getExitStatus();
 
 		} finally {
-			channel.disconnect();
+			if (channel != null)
+				channel.disconnect();
 		}
 
 	}
@@ -291,7 +284,8 @@ public class Tools {
 			return new String[] { channel.getExitStatus() + "", out, error };
 
 		} finally {
-			channel.disconnect();
+			if (channel != null)
+				channel.disconnect();
 		}
 
 	}
@@ -633,8 +627,12 @@ public class Tools {
 		return String.format(exec, existsMQS, queueManagerName);
 	}
 
-	public static void uncompress(File file, File outputDirectory) throws net.lingala.zip4j.exception.ZipException {
-		new net.lingala.zip4j.ZipFile(file.getAbsolutePath()).extractAll(outputDirectory.getAbsolutePath());
+	public static void uncompress(File file, File outputDirectory) throws IOException {
+
+		net.lingala.zip4j.ZipFile zfile = new net.lingala.zip4j.ZipFile(file.getAbsolutePath());
+		zfile.extractAll(outputDirectory.getAbsolutePath());
+		zfile.close();
+		
 
 	}
 
@@ -681,10 +679,6 @@ public class Tools {
 		return sb.toString();
 	}
 
-	
-
-	
-
 	private static CowExecutor cowExecutor = new CowExecutor();
 
 	public static String cowsay(String message) {
@@ -692,9 +686,9 @@ public class Tools {
 		return cowExecutor.execute();
 	}
 
-    public static String base64(String string) {
-        return Base64.getEncoder().encodeToString(string.getBytes());
-    }
+	public static String base64(String string) {
+		return Base64.getEncoder().encodeToString(string.getBytes());
+	}
 
 	public static byte[] toByteArray(File bar) throws IOException {
 		return Files.readAllBytes(bar.toPath());
