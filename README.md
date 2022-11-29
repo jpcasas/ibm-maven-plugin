@@ -15,7 +15,7 @@ This plugin aims to help the developpers with goals like:
 * MQ SSH Deployment multi-instance topology supported (API & PCF Deployment soon) 
 * Buld & deploy bars.
 
-**Coming soon.**
+**Coming soon**
 
 * Creates a jenkins/gitlab pipelines (soon more)
 * APIC Goals
@@ -62,8 +62,16 @@ add
 
 
 ```
+# Quick Start toolkit
 
-# Quick Start 
+## Download configurations
+https://github.com/jpcasas/ibm-toolkit-runconf/archive/refs/heads/main.zip
+
+## unzip & Import into the toolkit
+
+
+
+# Quick Start Build and Deploy CLI
 build and deploy in 3 steps
 
 ## Create an ACE Application
