@@ -1,10 +1,9 @@
 # ibm-maven-plugin
 
 # About
-This plugin aims to help the developpers with developement goals like:
+This plugin aims to help the developpers with goals like:
 
-* Creates mq scripts from flows (search in all flows MQ Objects in order to create the scripts)
-* Creates a jenkins pipelines (soon more)
+* Creates mq scripts from flows (search in all flows MQ Objects to create mq scripts)
 * Creates a basic documentation
 * Easy integration and installation into the toolkit
 
@@ -13,6 +12,12 @@ This plugin aims to help the developpers with developement goals like:
 * Maven Dependency features. include your libraries in
 * Works with packagebar. no toolkit need it for build bars (headless builds)
 * MQ SSH Deployment multi-instance topology supported (API & PCF Deployment soon) 
+
+Coming soon.
+
+* Creates a jenkins/gitlab pipelines (soon more)
+* APIC Goals
+* Remove IBM Libs dependencies
 
 
 # Requirements
