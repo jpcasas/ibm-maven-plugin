@@ -11,10 +11,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.DatagramSocket;
+
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.ServerSocket;
+
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
@@ -53,7 +53,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.github.ricksbrown.cowsay.plugin.CowExecutor;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -699,12 +699,7 @@ public class Tools {
 		return sb.toString();
 	}
 
-	private static CowExecutor cowExecutor = new CowExecutor();
-
-	public static String cowsay(String message) {
-		cowExecutor.setMessage(message);
-		return cowExecutor.execute();
-	}
+	
 
 	public static String base64(String string) {
 		return Base64.getEncoder().encodeToString(string.getBytes());

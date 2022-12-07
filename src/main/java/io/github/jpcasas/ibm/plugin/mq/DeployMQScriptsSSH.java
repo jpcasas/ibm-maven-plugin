@@ -19,7 +19,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
+
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;

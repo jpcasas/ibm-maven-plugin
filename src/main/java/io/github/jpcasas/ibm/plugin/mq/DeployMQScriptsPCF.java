@@ -31,8 +31,7 @@ import com.ibm.mq.headers.pcf.MQCFST;
 import com.ibm.mq.headers.pcf.PCFException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 
 @Mojo(name = "mq-deploy-pcf", requiresProject = false)
