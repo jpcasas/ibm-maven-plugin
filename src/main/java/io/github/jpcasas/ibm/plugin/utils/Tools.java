@@ -11,8 +11,15 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.InvalidAlgorithmParameterException;
@@ -70,6 +77,8 @@ public class Tools {
 
 	public static final String MODEL = "/defaultValues/%s.properties";
 	public static final String MODEL_MQSC = "/templates/%s.mustache";
+	private static final int MIN_PORT_NUMBER = 0;
+	private static final int MAX_PORT_NUMBER = 65536;
 
 	public static File searchFile(File dir, String file) {
 		if (dir == null) {
@@ -705,7 +714,6 @@ public class Tools {
 		return Files.readAllBytes(bar.toPath());
 	}
 
-	
 	public static ProjectDescriptor parseEclipseProject(File projectf)
 			throws ParserConfigurationException, SAXException, IOException {
 		ProjectDescriptor prodesc = new ProjectDescriptor();
@@ -725,7 +733,7 @@ public class Tools {
 
 		ArrayList<String> pjects = new ArrayList<>();
 		for (int i = 0; i < projects.getLength(); i++) {
-			Node nod =  projects.item(i);
+			Node nod = projects.item(i);
 			pjects.add(nod.getFirstChild().getNodeValue());
 		}
 		prodesc.setProjects(pjects);
@@ -733,13 +741,51 @@ public class Tools {
 		NodeList descNatures = doc.getElementsByTagName("nature");
 		ArrayList<String> natures = new ArrayList<>();
 		for (int i = 0; i < descNatures.getLength(); i++) {
-			Node nod =  descNatures.item(i);
+			Node nod = descNatures.item(i);
 			natures.add(nod.getFirstChild().getNodeValue());
 		}
 		prodesc.setNatures(natures);
 
-
 		return prodesc;
+	}
+
+	public static boolean isPortAvailable(String host, int port, int timeout) {
+
+		Socket s = null;
+		String reason = null;
+		try {
+			s = new Socket();
+			s.setReuseAddress(true);
+			SocketAddress sa = new InetSocketAddress(host, port);
+			s.connect(sa, timeout);
+		} catch (IOException e) {
+			if (e.getMessage().equals("Connection refused")) {
+				reason = "port " + port + " on " + host + " is closed.";
+			}
+			;
+			if (e instanceof UnknownHostException) {
+				reason = "host " + host + " is unresolved.";
+			}
+			if (e instanceof SocketTimeoutException) {
+				reason = "timeout while attempting to reach host " + host + " on port " + port;
+			}
+		} finally {
+			boolean res = false;
+			if (s != null) {
+				if (s.isConnected()) {
+					System.out.println("Port " + port + " on " + host + " is reachable!");
+					res = true;
+				} else {
+					System.out.println("Port " + port + " on " + host + " is not reachable; reason: " + reason);
+				}
+				try {
+					s.close();
+				} catch (IOException e) {
+				}
+			}
+			return res;
+		}
+
 	}
 
 }

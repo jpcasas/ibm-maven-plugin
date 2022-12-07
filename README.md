@@ -70,10 +70,13 @@ add
 
 
 ```
-# Quick Start Toolkit
+# Quick Start IBM ACE Toolkit
 
 [documentation](examples/05-ToolkitConfigurations/README.md)
 
+# Quick Start IBM MQ Series
+
+[documentation](examples/06-MQDeployment/README.md/README.md)
 
 # Quick Start Build and Deploy CLI
 build and deploy in 3 steps
@@ -141,7 +144,7 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 | mvn ibm:mq-deploy             | [properties](doc/mq-deploy.md)             | connects to a MQ and execute the MQ scripts                                     | [example](examples/04-DeploymentGoals) | deployment |
 
 
-
+# IBM MQ Series documentation
 
 # Work in progress documentation
 
