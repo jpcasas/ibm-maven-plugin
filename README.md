@@ -1,5 +1,10 @@
 # ibm-maven-plugin
 
+Maven plugin for: 
+
+* IBM App Connect Enterprice (ACE) 11 / 12 / IBM Integration Bus (IIB) 10
+* IBM MQ Series (Linux Installations)
+
 # About
 This plugin aims to help the developpers with goals like:
 
