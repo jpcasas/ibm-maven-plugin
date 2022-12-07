@@ -25,7 +25,8 @@ import org.xml.sax.SAXException;
 @Mojo(name = "ace-policy-properties", requiresProject = false)
 public class PolicyGenerateProperties extends AbstractMojo {
 
-    private String[] env = new String[] { "QA", "ACP", "PRD" };
+    @Parameter(defaultValue = "QA,CERT,PRD", property = "ibm.environments", required = true)
+	private String env ;
 
     @Parameter(defaultValue = ".properties", property = "ibm.ace.pextension", required = false)
     private String pextension;

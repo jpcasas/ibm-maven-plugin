@@ -38,6 +38,10 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
@@ -49,12 +53,18 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import io.github.jpcasas.ibm.plugin.model.ecliipse.ProjectDescriptor;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class Tools {
 
@@ -141,7 +151,9 @@ public class Tools {
 
 	}
 
-	public static void copyFiles(File pmodel, File resources, String env[], String pextension) throws IOException {
+	public static void copyFiles(File pmodel, File resources, String environments, String pextension)
+			throws IOException {
+		String[] env = environments.split(",");
 		for (int i = 0; i < env.length; i++) {
 			FileUtils.copyFile(pmodel, new File(resources, env[i] + pextension));
 		}
@@ -632,7 +644,6 @@ public class Tools {
 		net.lingala.zip4j.ZipFile zfile = new net.lingala.zip4j.ZipFile(file.getAbsolutePath());
 		zfile.extractAll(outputDirectory.getAbsolutePath());
 		zfile.close();
-		
 
 	}
 
@@ -692,6 +703,43 @@ public class Tools {
 
 	public static byte[] toByteArray(File bar) throws IOException {
 		return Files.readAllBytes(bar.toPath());
+	}
+
+	
+	public static ProjectDescriptor parseEclipseProject(File projectf)
+			throws ParserConfigurationException, SAXException, IOException {
+		ProjectDescriptor prodesc = new ProjectDescriptor();
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		DocumentBuilder db = dbf.newDocumentBuilder();
+
+		Document doc = db.parse(projectf);
+
+		doc.getDocumentElement().normalize();
+		NodeList namelist = doc.getElementsByTagName("name");
+		if (namelist.getLength() > 0) {
+			prodesc.setName(namelist.item(0).getFirstChild().getNodeValue());
+
+		}
+		NodeList projects = doc.getElementsByTagName("project");
+
+		ArrayList<String> pjects = new ArrayList<>();
+		for (int i = 0; i < projects.getLength(); i++) {
+			Node nod =  projects.item(i);
+			pjects.add(nod.getFirstChild().getNodeValue());
+		}
+		prodesc.setProjects(pjects);
+
+		NodeList descNatures = doc.getElementsByTagName("nature");
+		ArrayList<String> natures = new ArrayList<>();
+		for (int i = 0; i < descNatures.getLength(); i++) {
+			Node nod =  descNatures.item(i);
+			natures.add(nod.getFirstChild().getNodeValue());
+		}
+		prodesc.setNatures(natures);
+
+
+		return prodesc;
 	}
 
 }

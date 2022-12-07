@@ -12,12 +12,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.ibm.integration.admin.model.common.LogEntry;
-import com.ibm.integration.admin.model.server.DeployResult;
-import com.ibm.integration.admin.proxy.IntegrationAdminException;
-import com.ibm.integration.admin.proxy.IntegrationNodeProxy;
-import com.ibm.integration.admin.proxy.IntegrationServerProxy;
-
+import io.github.jpcasas.ibm.plugin.model.DeployResult;
+import io.github.jpcasas.ibm.plugin.model.LogEntry;
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -90,84 +86,48 @@ public class BarDeploy extends AbstractMojo {
 			bars = new ArrayList<File>();
 			bars.add(barFileName);
 		}
-		IntegrationNodeProxy b = null;
+		
 		DeployResult deployResult = null;
-		IntegrationServerProxy eg = null;
+		
 		String type = detectDeploymentType();
-		if (bars.size() > 0) {
-			// Detect type Integration Node or Integration Server
 
-			getLog().info("Connecting to the integration node running at " + host + ":" + port + " MODE = " + type);
-
-			if (type.equals("integrationNode")) {
-
-				getLog().info("Connecting to the integration node running at " + host + ":" + port + "...");
-				b = new IntegrationNodeProxy(host, port, user, password, useSSL);
-
-				getLog().info("Discovering integration server '" + integrationServer + "'...");
-
-				try {
-					eg = b.getIntegrationServerByName(integrationServer);
-
-				} catch (IntegrationAdminException e) {
-					getLog().error(String.format("ERROR Integration Admin Exception %s", e.getMessage()));
-					throw new MojoFailureException("Integration Admin Exception", e);
-				}
-
-				if (eg == null) {
-					getLog().info("Integration server not found");
-					throw new MojoExecutionException("Integration Server not found");
-				}
-			}
-
-		}
 		boolean fail = false;
 		for (File bar : bars) {
 
 			try {
 
-				getLog().info("Deploying " + bar.getAbsolutePath() + "...");
+				getLog().info("Deploying " + bar.getAbsolutePath() + "..." +" MODE: "+type);
 
-				if (type.equals("integrationNode")) {
-					deployResult = eg.deploy(bar.getAbsolutePath());
-				} else {
-					deployResult = deploy(bar);
-				}
-
-				
+				deployResult = deploy(bar, (type.equals("integrationNode"))?integrationServer:null);
 
 				if (deployResult == null) {
-					
+
 					getLog().info("----------------------------------------------------");
 					getLog().info("        Comm Error No response                      ");
+					getLog().info("      STATUS:   "+( (response==null)?"":response.getStatus()+" "+response.getStatusText() )+"                      ");
 					getLog().info("----------------------------------------------------");
 
 				} else {
 					getLog().info("Result deploying " + bar.getName());
-					
+
 					if (Integer.parseInt(deployResult.getCount()) > 0) {
 						LogEntry info = deployResult.getLogEntry()[0];
 						if (info.getMessage().getSeverity().equals("0")) {
 							getLog().info("----------------------------------------------------");
 							getLog().info("        Application DEPLOYED                        ");
 							getLog().info("----------------------------------------------------");
-							
-							
+
 						} else {
 							getLog().info("----------------------------------------------------");
 							getLog().info("        Application NOT DEPLOYED                    ");
 							getLog().info("----------------------------------------------------");
-							
+
 						}
 						printEntries(deployResult);
 
 					}
 
 				}
-
-			} catch (IntegrationAdminException e) {
-				getLog().error(String.format("ERROR Integration Admin Exception %s", e.getMessage()));
-				fail = true;
 
 			} catch (IOException e) {
 				getLog().error(String.format("ERROR IOException %s", e.getMessage()));
@@ -186,16 +146,23 @@ public class BarDeploy extends AbstractMojo {
 			getLog().info("----------------------------------------------------");
 			getLog().info(logEntry.getDetailedText());
 		}
-		
+
 	}
 
-	private DeployResult deploy(File bar) throws IOException {
+	private HttpResponse<DeployResult> response;
+	private DeployResult deploy(File bar, String is) throws IOException {
 
 		Unirest.config().verifySsl(false);
 		String httpSecure = (useSSL) ? "https://" : "http://";
-		String urlRequest = String.format("%s%s:%s/apiv2/deploy", httpSecure, host, port);
+		String urlRequest = null;
+		if(is!=null){
+			urlRequest = String.format("%s%s:%s/apiv2/servers/%s/deploy", httpSecure, host, port, is);	
+		}else{
+			urlRequest = String.format("%s%s:%s/apiv2/deploy", httpSecure, host, port);	
+		}
+		
 		String usrpass = Tools.base64(user + ":" + password);
-		HttpResponse<DeployResult> response = Unirest.post(urlRequest).header("accept", "application/json")
+		this.response = Unirest.post(urlRequest).header("accept", "application/json")
 				.header("Content-Type", " application/octet-stream").header("Authorization", "Basic " + usrpass)
 				.body(Tools.toByteArray(bar)).asObject(DeployResult.class);
 		if (response.isSuccess())

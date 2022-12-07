@@ -1,4 +1,4 @@
-package io.github.jpcasas.ibm.plugin.doc.model;
+package io.github.jpcasas.ibm.plugin.model.doc;
 
 import java.util.ArrayList;
 import java.util.List;

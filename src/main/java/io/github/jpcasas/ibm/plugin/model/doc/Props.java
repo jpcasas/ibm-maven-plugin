@@ -1,4 +1,4 @@
-package io.github.jpcasas.ibm.plugin.doc.model;
+package io.github.jpcasas.ibm.plugin.model.doc;
 
 public class Props {
 

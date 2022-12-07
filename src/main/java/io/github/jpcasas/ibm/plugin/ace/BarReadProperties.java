@@ -7,15 +7,16 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import com.ibm.broker.config.util.ReadBar;
-import io.github.jpcasas.ibm.plugin.utils.Tools;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+
+import com.ibm.broker.config.util.ReadBar;
+
+import io.github.jpcasas.ibm.plugin.utils.Tools;
 
 /**
  *
@@ -34,7 +35,8 @@ public class BarReadProperties extends AbstractMojo {
 	@Parameter(defaultValue = ".bar", property = "ibm.ace.extension", required = true)
 	private String extension;
 
-	private String[] env = new String[] { "QA", "ACP", "PRD" };
+	@Parameter(defaultValue = "QA,CERT,PRD", property = "ibm.environments", required = true)
+	private String env;
 
 	@Parameter(defaultValue = ".properties", property = "ibm.ace.pextension", required = false)
 	private String pextension;
@@ -78,8 +80,10 @@ public class BarReadProperties extends AbstractMojo {
 						}
 						if (spaces == getSpaces(string)) {
 							if (!dryRun) {
-								pr.println(string.trim());
-								pr.flush();
+								if (pr != null) {
+									pr.println(string.trim());
+									pr.flush();
+								}
 							} else {
 								getLog().info(string.trim());
 							}
@@ -97,7 +101,8 @@ public class BarReadProperties extends AbstractMojo {
 
 				}
 				if (!dryRun) {
-					pr.close();
+					if (pr != null)
+						pr.close();
 					Tools.copyFiles(pmodel, resources, env, pextension);
 				}
 			} catch (FileNotFoundException e) {

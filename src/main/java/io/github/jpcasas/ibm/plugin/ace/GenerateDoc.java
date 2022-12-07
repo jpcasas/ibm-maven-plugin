@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import io.github.jpcasas.ibm.plugin.doc.model.Content;
-import io.github.jpcasas.ibm.plugin.doc.model.ProjectFile;
-import io.github.jpcasas.ibm.plugin.doc.model.Props;
+import io.github.jpcasas.ibm.plugin.model.doc.Content;
+import io.github.jpcasas.ibm.plugin.model.doc.ProjectFile;
+import io.github.jpcasas.ibm.plugin.model.doc.Props;
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 
 import org.apache.commons.io.FilenameUtils;

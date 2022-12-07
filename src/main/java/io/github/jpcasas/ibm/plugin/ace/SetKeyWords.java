@@ -132,6 +132,7 @@ public class SetKeyWords extends AbstractMojo {
 				ByteArrayInputStream bais = new ByteArrayInputStream(keyWordsString.getBytes());
 				parameters.setFileNameInZip("META-INF/keywords.txt");
 				appZip.addStream(bais, parameters);
+				appZip.close();
 			}
 			String fileName = barFile.getName();
 
