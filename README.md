@@ -4,7 +4,7 @@ Maven plugin for:
 
 * IBM App Connect Enterprice (ACE) 11 / 12 / IBM Integration Bus (IIB) 10
 * IBM MQ Series (Linux Installations)
-* IBM API Connect **soon**
+* IBM API Connect (**soon**)
 
 # About
 This plugin aims to help the developpers with goals like:
