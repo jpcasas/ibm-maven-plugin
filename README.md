@@ -150,11 +150,11 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 
 Documentation
 
-  [readme](doc/MQ/README.md) 
+  [here](doc/MQ/README.md) 
 
 Examples how to do to run MQ Scripts in remote Queue Managers
 
-  [readme](06-MQDeployment/README.md) 
+  [here](06-MQDeployment/README.md) 
 
 # Work in progress documentation
 
