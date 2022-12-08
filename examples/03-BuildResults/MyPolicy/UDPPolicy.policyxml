@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<policies>
-  <policy policyType="UserDefined" policyName="UDPPolicy" policyTemplate="UserDefined">
-    <P1>V1</P1>
-    <P2>V2</P2>
-    <P3>V3</P3>
-    <P4>V4</P4>
-  </policy>
-</policies>
