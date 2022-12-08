@@ -148,7 +148,7 @@ Documentation
 
 Examples how to do to run MQ Scripts in remote Queue Managers
 
-  [here](06-MQDeployment/README.md) 
+  [here](examples/06-MQDeployment/README.md) 
 
 # Work in progress documentation
 
