@@ -34,9 +34,9 @@ This plugin aims to help the developpers with goals like:
 
 # Requirements
 
-**Only need it for goals that:**
+**Running into IBM App Connect (mqsiprofile) if only need for goals that:**
 
-- **build bars**
+- **Build bars**
 
 - **Override bars**
 
@@ -44,9 +44,7 @@ This plugin aims to help the developpers with goals like:
 
 - **Read Bar Properties & Creates overrides**
 
-- **Run into IBM App Connect Console**
-
-
+To set the mqsiprofile type the following commands
 
 Linux
 
