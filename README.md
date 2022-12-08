@@ -34,7 +34,7 @@ This plugin aims to help the developpers with goals like:
 
 # Requirements
 
-**Running into IBM App Connect (mqsiprofile) if only need for goals that:**
+**Installation of IBM Libraries are used by the following goals:**
 
 - **Build bars**
 
@@ -44,23 +44,20 @@ This plugin aims to help the developpers with goals like:
 
 - **Read Bar Properties & Creates overrides**
 
-To set the mqsiprofile type the following commands
+## Install IBM Libraries
 
-Linux
+```
+mvn install:install-file -Dfile="<INSTALL_PATH>/<VERSION>/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
+mvn install:install-file -Dfile="<INSTALL_PATH>/<VERSION>/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
 
-```bash
-source <installation_path>/ace-<version>/server/bin/mqsiprofile
+Example:
+
+mvn install:install-file -Dfile="/home/jpcasas/data/programs/ace-12.0.6.0/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
+mvn install:install-file -Dfile="/home/jpcasas/data/programs/ace-12.0.6.0/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
 
 ```
 
-Windows
-```cmd
-
-<installation_path>/ace-<version>/server/bin/mqsiprofile
-
-```
-
-**The other goals can be run without the IBM App Connect Console** 
+**The other goals can be run without Installing the libraries** 
 
 ## Maven configuration
 
