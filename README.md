@@ -25,7 +25,6 @@ This plugin aims to help the developpers with goals like:
 
 * Creates a jenkins/gitlab pipelines (soon more)
 * APIC Goals
-* Remove IBM Libs dependencies
 * Docker File and Kubernetes deployment descriptors
 
 **Not supported**
