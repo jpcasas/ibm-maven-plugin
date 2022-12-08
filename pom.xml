@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.jpcasas.ibm.plugin</groupId>
 	<artifactId>ibm-maven-plugin</artifactId>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>ibm-maven-plugin</name>
@@ -81,12 +81,16 @@
 			<groupId>com.ibm</groupId>
 			<artifactId>IntegrationAPI</artifactId>
 			<version>12.0.6</version>
+			<!-- <scope>system</scope>
+			<systemPath>${env.MQSI_BASE_FILEPATH}/common/classes/IntegrationAPI.jar</systemPath> -->
 		</dependency>
 		<!-- USED TO READ BAR AND OVERRIDE BAR-->
 		<dependency>
 			<groupId>com.ibm</groupId>
 			<artifactId>brokerutil</artifactId>
 			<version>12.0.6</version>
+		    <!--<scope>system</scope>
+			<systemPath>${env.MQSI_BASE_FILEPATH}/server/classes/brokerutil.jar</systemPath> -->
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
