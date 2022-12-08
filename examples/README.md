@@ -23,3 +23,9 @@
   Results of the executios of the goals of 02-BuildGoals
 
   [readme](04-DeploymentGoals/README.md) 
+
+* 06 Deploying MQ Objects
+
+  Examples how to do to run MQ Scripts in remote Queue Managers
+
+  [readme](06-MQDeployment/README.md) 

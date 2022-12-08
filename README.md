@@ -123,6 +123,7 @@ mvn -Dibm.ace.is=IS -Dibm.ace.host=localhost -Dibm.ace.port=<port> ibm:ace-deplo
 * generate mq scripts
 * generate Integration Tests (Beta)
 * Policies build and deployments
+* Deploying MQ Objects
   
 [here the examples](examples/README.md) 
 
