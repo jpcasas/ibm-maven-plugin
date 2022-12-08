@@ -37,8 +37,11 @@ This plugin aims to help the developpers with goals like:
 **Only need it for**
 
 **Goals that build bars**
-**override bars**
+
+**Override bars**
+
 **Generates MQ Scripts**
+
 **Read Bar Properties & Creates overrides**
 
 **Run into IBM App Connect Console**
