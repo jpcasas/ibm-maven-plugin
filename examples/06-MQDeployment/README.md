@@ -17,7 +17,7 @@ Run command:
 
 ```bash
 
-mvn -Dmq.channel=DEV.ADMIN.SVRCONN -Dmq.servers=localhost -Dmq.user=admin -Dmq.password=passw0rd -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4:mq-deploy-pcf
+mvn -Dmq.channel=DEV.ADMIN.SVRCONN -Dmq.servers=localhost -Dmq.user=admin -Dmq.password=passw0rd -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.5:mq-deploy-pcf
 
 ```
 
@@ -77,7 +77,7 @@ echo "REFRESH SECURITY(*)" | runmqsc <QueueManager>
 
 
 ```bash
-mvn -Dmq.key.auth=false -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.password=casasc -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4:mq-deploy-ssh
+mvn -Dmq.key.auth=false -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.password=casasc -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.5:mq-deploy-ssh
 
 ```
 
@@ -95,7 +95,7 @@ Run command using ssh key
 
 ```bash
 
-mvn -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4:mq-deploy-ssh
+mvn -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.5:mq-deploy-ssh
 
 ```
 
