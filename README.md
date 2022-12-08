@@ -34,7 +34,10 @@ This plugin aims to help the developpers with goals like:
 
 # Requirements
 
+
+
 **Run into IBM App Connect Console**
+**Only for goals that build bars / override bars / Generates MQ Scripts / Read Bar Properties & Creates overrides**
 
 Linux
 
@@ -49,6 +52,8 @@ Windows
 <installation_path>/ace-<version>/server/bin/mqsiprofile
 
 ```
+
+**The other goals can be run without the IBM App Connect Console** 
 
 ## Maven configuration
 
