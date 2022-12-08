@@ -35,21 +35,21 @@ This plugin aims to help the developpers with goals like:
 
 # Requirements
 
-## Install IBM Libraries
+** Run into IBM App Connect Console **
+
+Linux
 
 ```bash
-mvn install:install-file -Dfile="<INSTALL_PATH>/<VERSION>/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
-mvn install:install-file -Dfile="<INSTALL_PATH>/<VERSION>/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
-
-
-Example:
-
-mvn install:install-file -Dfile="/home/jpcasas/data/programs/ace-12.0.6.0/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
-mvn install:install-file -Dfile="/home/jpcasas/data/programs/ace-12.0.6.0/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
-
+source <installation_path>/ace-<version>/server/bin/mqsiprofile
 
 ```
-**don't change the version  in property "-Dversion=12.0.6"**
+
+Windows
+```cmd
+
+<installation_path>/ace-<version>/server/bin/mqsiprofile
+
+```
 
 ## Maven configuration
 
@@ -60,6 +60,7 @@ user:   ${user.home}/.m2/settings.xml
 global: ${maven.home}/conf/settings.xml
 
 add
+
 ```
 
 <settings>
