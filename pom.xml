@@ -16,7 +16,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/jpcasas/ibm-maven-plugin.git</connection>
-		<developerConnection>scm:git:https://github.com/jpcasas/ibm-maven-plugin.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:jpcasas/ibm-maven-plugin.git</developerConnection>
 		<url>http://github.com/jpcasas/ibm-maven-plugin/tree/master</url>
 		<tag>HEAD</tag>
 	</scm>
