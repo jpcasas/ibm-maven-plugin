@@ -1,4 +1,4 @@
-# Examples deployment of MQ Scripts
+# Examples Deploying MQ Scripts
 
 # Deployment using Host / port / channel 
 
@@ -94,6 +94,7 @@ Run command using ssh key
 mvn -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4-SNAPSHOT:mq-deploy-ssh
 
 ```
+
 # Known Issues
 
 ## com.jcraft.jsch.JSchException: invalid privatekey
