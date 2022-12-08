@@ -14,8 +14,8 @@ Features:
 
 | Name                 | Type   | Default        | Since | Description                                                                                                            |
 | -------------------- | ------ | -------------- | ----- | ---------------------------------------------------------------------------------------------------------------------- |
-| mq.user              | String |                | 1.0.0 | SSH User name if using SSH user/password mode                                                                          |
-| mq.password          | String |                | 1.0.0 | SSH Password if using SSH user/password mode                                                                           |
+| mq.user              | String |                | 1.0.0 | SSH/PCF User name if using SSH user/password mode                                                                          |
+| mq.password          | String |                | 1.0.0 | SSH/PCF Password if using SSH user/password mode                                                                           |
 | mq.pextension        | String | properties     | 1.0.0 | extension of the file where are the key value properties to replace in the script file                                 |
 | mq.separator         | String | ,              | 1.0.0 | separator use to separe the list of queue managers                                                                     |
 | mq.servers           | String |                | 1.0.0 | List of queue managers separeted by the configured separator (default: ,)                                              |
