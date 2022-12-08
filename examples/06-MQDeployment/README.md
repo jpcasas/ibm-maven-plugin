@@ -2,6 +2,8 @@
 
 # Deployment using Host / port / channel 
 
+For the example, we're going to use and container of MQ
+
 ## Run Container
 
 ```bash
@@ -9,7 +11,7 @@
 docker run --env LICENSE=accept --env MQ_QMGR_NAME=QM1 --publish 1414:1414 --publish 9443:9443 --detach --volume qm1data:/mnt/mqm ibmcom/mq
 
 ```
-## Install scripts inside the install folder
+## Installing scripts of the install folder using the MQ PCF API
 
 Run command: 
 
@@ -19,7 +21,7 @@ mvn -Dmq.channel=DEV.ADMIN.SVRCONN -Dmq.servers=localhost -Dmq.user=admin -Dmq.p
 
 ```
 
-## Example Channel SVRCONN Configuration
+## Example of SVRCONN Channel Configuration
 
 ```
 
@@ -31,6 +33,8 @@ REFRESH SECURITY(*)
 ```
 
 # Deployment using SSH
+
+This goal allows to use ssh to connect to the host and run the MQ Scripts
 
 ## Requirements
 
@@ -73,7 +77,7 @@ echo "REFRESH SECURITY(*)" | runmqsc <QueueManager>
 
 
 ```bash
-mvn -Dmq.key.auth=false -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.password=casasc -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4-SNAPSHOT:mq-deploy-ssh
+mvn -Dmq.key.auth=false -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.password=casasc -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4:mq-deploy-ssh
 
 ```
 
@@ -91,7 +95,7 @@ Run command using ssh key
 
 ```bash
 
-mvn -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4-SNAPSHOT:mq-deploy-ssh
+mvn -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.queueManager=QM1 -Dmq.scripts.install=install io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.4:mq-deploy-ssh
 
 ```
 
