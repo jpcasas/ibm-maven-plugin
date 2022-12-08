@@ -35,7 +35,7 @@ This plugin aims to help the developpers with goals like:
 
 # Requirements
 
-** Run into IBM App Connect Console **
+**Run into IBM App Connect Console**
 
 Linux
 
@@ -77,7 +77,7 @@ add
 
 # Quick Start IBM MQ Series
 
-[documentation](examples/06-MQDeployment/README.md/README.md)
+[documentation](examples/06-MQDeployment/README.md)
 
 # Quick Start Build and Deploy CLI
 build and deploy in 3 steps
