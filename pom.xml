@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.jpcasas.ibm.plugin</groupId>
 	<artifactId>ibm-maven-plugin</artifactId>
-	<version>1.0.6</version>
+	<version>1.0.7-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>ibm-maven-plugin</name>
@@ -18,7 +18,7 @@
 		<connection>scm:git:git://github.com/jpcasas/ibm-maven-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:jpcasas/ibm-maven-plugin.git</developerConnection>
 		<url>http://github.com/jpcasas/ibm-maven-plugin/tree/master</url>
-		<tag>ibm-maven-plugin-1.0.6</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
