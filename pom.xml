@@ -89,7 +89,7 @@
 			<groupId>com.ibm</groupId>
 			<artifactId>brokerutil</artifactId>
 			<version>12.0.6</version>
-		    <!--<scope>system</scope>
+			<!--<scope>system</scope>
 			<systemPath>${env.MQSI_BASE_FILEPATH}/server/classes/brokerutil.jar</systemPath> -->
 		</dependency>
 		<dependency>
@@ -154,8 +154,8 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.11</version>
 		</dependency>
-		
-		
+
+
 		<!-- https://mvnrepository.com/artifact/com.konghq/unirest-java -->
 		<dependency>
 			<groupId>com.konghq</groupId>
@@ -163,9 +163,12 @@
 			<version>3.13.13</version>
 		</dependency>
 
-		
 
-		
+		<dependency>
+			<groupId>org.apache.maven.shared</groupId>
+			<artifactId>maven-invoker</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>
@@ -184,7 +187,7 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 				</plugin>
-				
+
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.22.1</version>
@@ -225,7 +228,7 @@
 					<source>8</source>
 					<target>8</target>
 				</configuration>
-			</plugin> 
+			</plugin>
 			<plugin>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.6.0</version>
@@ -349,13 +352,13 @@
 						<artifactId>dependency-check-maven</artifactId>
 						<version>6.1.1</version>
 						<executions>
-						   <execution>
-							  <goals>
-								 <goal>check</goal>
-							  </goals>
-						   </execution>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
 						</executions>
-					 </plugin>
+					</plugin>
 
 				</plugins>
 
