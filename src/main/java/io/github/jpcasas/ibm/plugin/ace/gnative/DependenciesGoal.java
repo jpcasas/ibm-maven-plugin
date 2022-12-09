@@ -3,7 +3,6 @@ package io.github.jpcasas.ibm.plugin.ace.gnative;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
