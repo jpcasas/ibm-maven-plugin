@@ -74,7 +74,7 @@ public class SetKeyWords extends AbstractMojo {
 
 			addMQSIProps(info, session.getSystemProperties());
 
-			setMQSIKeys(info, system);
+			//setMQSIKeys(info, system);
 
 			generateKeywords(bar, info, system.get("Version"));
 
@@ -113,7 +113,8 @@ public class SetKeyWords extends AbstractMojo {
 	}
 
 	private void generateKeywords(File barFile, HashMap<String, String> info, String version) {
-		File tmpFolder = new File("temp");
+		File tempdir = FileUtils.getTempDirectory();
+		File tmpFolder = new File(tempdir, "keywords");
 		tmpFolder.mkdirs();
 
 		File barBackup = new File(barFile.getParentFile(), barFile.getName() + ".bak");
@@ -143,6 +144,7 @@ public class SetKeyWords extends AbstractMojo {
 			zipOut.close();
 			fos.close();
 			barBackup.delete();
+			FileUtils.deleteDirectory(tmpFolder);
 		} catch (ZipException e) {
 			problem = true;
 

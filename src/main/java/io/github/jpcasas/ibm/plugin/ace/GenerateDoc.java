@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -16,8 +17,11 @@ import io.github.jpcasas.ibm.plugin.model.doc.ProjectFile;
 import io.github.jpcasas.ibm.plugin.model.doc.Props;
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -54,7 +58,10 @@ public class GenerateDoc extends AbstractMojo {
             Properties p = new Properties();
             String projectName = project.getArtifactId();
             String groupId = project.getGroupId();
-            String git = project.getScm().getDeveloperConnection();
+            Scm scm = project.getScm();
+            String git = "";
+            if(scm!=null)
+                git = project.getScm().getDeveloperConnection();
             String version = project.getVersion();
 
             HashMap<String, List<Content>> map = new HashMap<>();
@@ -108,12 +115,12 @@ public class GenerateDoc extends AbstractMojo {
         return properties;
     }
 
+
     private void buildContext(File root, HashMap<String, List<Content>> map) {
-
-        File[] files = root.listFiles();
-        for (File file : files) {
-            if (!file.isDirectory()) {
-
+        
+        Collection<File> c = FileUtils.listFilesAndDirs(root, FileFilterUtils.fileFileFilter(), FileFilterUtils.notFileFilter(FileFilterUtils.prefixFileFilter(".git").or(FileFilterUtils.prefixFileFilter(".svn"))));
+        
+        for (File file : c) {
                 String ext = FilenameUtils.getExtension(file.getName());
                 List<Content> values = map.get(ext);
                 if (values == null)
@@ -125,9 +132,6 @@ public class GenerateDoc extends AbstractMojo {
                 content.addProjectFile(new ProjectFile(relative, file.getName()));
                 values.add(content);
                 map.put(ext, values);
-            } else {
-                buildContext(file, map);
-            }
         }
 
     }
