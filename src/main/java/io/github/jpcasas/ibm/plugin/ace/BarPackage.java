@@ -72,6 +72,8 @@ public class BarPackage extends AbstractMojo {
 
 				ProjectDescriptor descriptor = Tools.parseEclipseProject(projectf);
 
+				// for policies and libs
+				//
 				if (descriptor.getNatures().contains("com.ibm.etools.msgbroker.tooling.libraryNature")) {
 					File zipFile = new File(outputDirectory, artifact + ".zip");
 					ZipFile installer = new ZipFile(zipFile);

@@ -6,7 +6,7 @@
 	<groupId>dev.jpcasas.integration.ace</groupId>
 	<artifactId>{{artifactId}}</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<packaging>bar</packaging>
+	<packaging>zip</packaging>
 	<properties>
 		<ibm.plugin.version>1.0.5</ibm.plugin.version>
 	</properties>
