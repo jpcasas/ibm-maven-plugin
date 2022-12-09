@@ -97,7 +97,7 @@ Create any ace application / library and inside the project run the command
 ### **Mavenize**
 
 ```
-mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.7:generate-pom
+mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.8:generate-pom
 
 ```
 ### **build bar**
