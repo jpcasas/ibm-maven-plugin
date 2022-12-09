@@ -26,7 +26,7 @@ import io.github.jpcasas.ibm.plugin.utils.Tools;
 @Mojo(name = "ace-properties")
 public class BarReadProperties extends AbstractMojo {
 
-	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
+	@Parameter(defaultValue = "../workspace", property = "outputDir", required = true)
 	private File outputDirectory;
 
 	@Parameter(defaultValue = "${project}", required = true)

@@ -42,8 +42,7 @@ public class SetKeyWords extends AbstractMojo {
 	@Parameter(defaultValue = "${session}")
 	protected MavenSession session;
 
-	@Parameter(defaultValue = "${mojoExecution}")
-	protected MojoExecution mojoExecution;
+	
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {

@@ -85,6 +85,7 @@ public class BarPackage extends AbstractMojo {
 					FlowRendererBAR.write(workspace, individual, workspace, artifact + extension, 0, true);
 					File barfile = new File(outputDirectory, artifact + extension);
 					FileUtils.copyFileToDirectory(barfile, baseDir);
+					getLog().info("BAR File copied from "+barfile.getAbsolutePath()+" to folder "+baseDir.getAbsolutePath());
 					File zipFile = new File(outputDirectory, artifact + ".zip");
 					ZipFile installer = new ZipFile(zipFile);
 					installer.addFile(barfile);
@@ -97,10 +98,11 @@ public class BarPackage extends AbstractMojo {
 					}
 					installer.close();
 					project.getArtifact().setFile(installer.getFile());
+					getLog().info("Artifact "+installer.getFile().getAbsolutePath());
 				}
 
-				getLog().info(" ");
-				getLog().info("(\"-------------------------END-------------------------");
+				
+				
 			} else {
 				throw new MojoFailureException("Project not found, Check if the .project exists into the folder");
 			}

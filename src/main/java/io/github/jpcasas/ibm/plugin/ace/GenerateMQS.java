@@ -30,9 +30,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "ace-mqs", requiresProject = false)
 public class GenerateMQS extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
-    private File outputDirectory;
-
     @Parameter(defaultValue = "resources/mq/install", property = "ibm.mq.install.folder", required = false)
     private File install;
 

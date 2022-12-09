@@ -21,6 +21,9 @@ public class CleanGoal extends AbstractMojo {
 
     @Parameter(defaultValue = "workspace", property = "ibm.ace.build.workspace", required = false)
     private String workspaceName;
+
+    @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
+	private File outputDirectory;
     
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -33,7 +36,8 @@ public class CleanGoal extends AbstractMojo {
         if(workspace.exists()){
             try {
                 FileUtils.deleteDirectory(workspace);
-                FileUtils.deleteDirectory(new File(basedir, "target"));
+                FileUtils.deleteDirectory(outputDirectory);
+                
                 FileUtils.listFiles(basedir, new String[]{"bar"}, false).forEach(file -> file.delete());
             } catch (IOException e) {
                 getLog().error("Can't remove the workspace folder ../"+workspaceName);
