@@ -11,6 +11,6 @@ cd MyApp
 
 ```
 
-mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.3:generate-pom
+mvn io.github.jpcasas.ibm.plugin:ibm-maven-plugin:1.0.5:generate-pom
 
 ```

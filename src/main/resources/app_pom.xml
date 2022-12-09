@@ -7,15 +7,12 @@
 	<artifactId>{{artifactId}}</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>zip</packaging>
-	<properties>
-		<ibm.plugin.version>1.0.5</ibm.plugin.version>
-	</properties>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>io.github.jpcasas.ibm.plugin</groupId>
 				<artifactId>ibm-maven-plugin</artifactId>
-				<version>${ibm.plugin.version}</version>
+				<version>1.0.5</version>
 				<extensions>true</extensions>
 			</plugin>
 		</plugins>
