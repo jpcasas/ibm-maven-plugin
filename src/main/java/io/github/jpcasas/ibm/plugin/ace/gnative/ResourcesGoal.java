@@ -24,11 +24,12 @@ public class ResourcesGoal extends AbstractMojo {
     @Parameter(defaultValue = "workspace", property = "ibm.ace.build.workspace", required = false)
     private String workspaceName;
 
-    @Parameter(defaultValue = ".git,properties,resources", property = "ibm.ace.build.prefixFilters", required = true)
+    @Parameter(defaultValue = ".git,properties,resources,.svn", property = "ibm.ace.build.prefixFilters", required = true)
     private String prefixToFilter;
 
     @Parameter(defaultValue = "bar,BAR,zip", property = "ibm.ace.build.suffixFilters", required = true)
     private String suffixToFilter;
+
 
     
     @Override

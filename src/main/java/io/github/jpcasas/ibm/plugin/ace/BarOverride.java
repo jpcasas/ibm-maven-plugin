@@ -22,22 +22,13 @@ import com.ibm.broker.config.util.ApplyBarOverride;
 @Mojo(name = "ace-override", requiresProject = false, defaultPhase = LifecyclePhase.DEPLOY)
 public class BarOverride extends AbstractMojo {
 
-	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
-	private File outputDirectory;
 
-	@Parameter(defaultValue = "${session}", required = true)
-	private MavenSession session;
-
-	@Parameter(defaultValue = ".bar", required = true)
-	private String ext;
-
+	
 	@Parameter(property = "ibm.ace.overrideFile", required = true)
 	private File overrideFile;
 
 	@Parameter(property = "ibm.ace.bar")
 	private File barFileName;
-
-	
 
 	@Parameter(property = "ibm.ace.override.validate", defaultValue = "false")
 	private boolean validate;
