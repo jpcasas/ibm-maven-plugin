@@ -30,8 +30,6 @@ public class ResourcesGoal extends AbstractMojo {
     @Parameter(defaultValue = "bar,BAR,zip", property = "ibm.ace.build.suffixFilters", required = true)
     private String suffixToFilter;
 
-    @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
-	private File outputDirectory;
 
     
     @Override
