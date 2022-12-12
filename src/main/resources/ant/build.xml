@@ -1,0 +1,19 @@
+<project name="build-jar" default="dist" basedir=".">
+    
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/> 
+    <property name="cp" location="cp"/>
+    <property name="projectLocation" location="projectLocation"/>
+    <property name="jarName" location="jarName"/>
+    
+    <target name="compile" description="compile the source">
+      <mkdir dir="${dist}"/>
+      <javac srcdir="${src}" destdir="${build}" classpath="${cp}"/>
+    </target>
+  
+    <target name="dist" depends="compile" description="generate the distribution">
+      <jar jarfile="${projectLocation}/${jarName}.jar" basedir="${build}"/>
+    </target>
+  
+  </project>

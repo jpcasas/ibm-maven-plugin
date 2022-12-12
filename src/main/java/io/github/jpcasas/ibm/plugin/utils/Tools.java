@@ -60,6 +60,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import io.github.jpcasas.ibm.plugin.model.MessageAssembly;
 import io.github.jpcasas.ibm.plugin.model.ecliipse.ProjectDescriptor;
 
 import org.apache.commons.io.FileUtils;
@@ -169,41 +170,46 @@ public class Tools {
 
 	}
 
+	public static String executeCommand( String command, Log log, File folder)
+	throws InterruptedException, IOException, MojoExecutionException {
+		return executeCommand(command, log, null, true, folder, true);
+	}
+
 	public static String executeCommand(String command, Log log)
 			throws InterruptedException, IOException, MojoExecutionException {
-		return executeCommand(command, log, null, true);
+		return executeCommand(command, log, null, true, null, true);
 	}
 
 	public static String executeCommand(String command, Log log, boolean print)
 			throws InterruptedException, IOException, MojoExecutionException {
-		return executeCommand(command, log, null, print);
+		return executeCommand(command, log, null, print, null, true);
 	}
 
 	public static String executeCommand(String command, Log log, String[] var)
 			throws InterruptedException, IOException, MojoExecutionException {
 
-		return executeCommand(command, log, var, true);
+		return executeCommand(command, log, var, true, null, true);
 	}
 
-	public static String executeCommand(String command, Log log, String[] var, boolean print)
+
+	public static String executeCommand(String command, Log log, String[] var, boolean print, File folder, boolean throwException)
 			throws InterruptedException, IOException, MojoExecutionException {
 
 		Runtime runtime = Runtime.getRuntime();
-		Process p = null;
-		if (var == null) {
-			p = runtime.exec(command);
-		} else {
-			p = runtime.exec(command, var);
-		}
+		Process p = runtime.exec(command, var, folder);
+		
 		StringBuilder sout = new StringBuilder();
-		sout.append(Tools.print(p.getInputStream(), log, Level.ALL, print));
+		
 
+		sout.append(Tools.print(p.getInputStream(), log, Level.ALL, print));
+		
 		Tools.print(p.getErrorStream(), log, Level.SEVERE);
 		p.waitFor();
 
-		if (p.exitValue() != 0) {
+		if (throwException && p.exitValue() != 0 ) {
 			throw new MojoExecutionException("ERROR: the executed runtime command failed !");
 		}
+		
 		return sout.toString();
 	}
 
@@ -782,5 +788,58 @@ public class Tools {
 		}
 
 	}
+
+	public static boolean isMqsiprofileSet() {
+		return getInstallationFolder() != null;
+
+	} 
+
+    public static String getInstallationFolder() {
+		return System.getenv().get("MQSI_BASE_FILEPATH");
+    }
+
+	public static boolean commandExists(String string) {
+		String install = null;
+		if((install = getInstallationFolder())!=null){
+			return new File(install+File.separator+"server/bin/"+string).exists();
+		}
+		return false;
+	}
+
+	public static MessageAssembly parseMessageAssembly(File file) throws ParserConfigurationException, SAXException, IOException {
+		MessageAssembly messageAssembly = new MessageAssembly();
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		DocumentBuilder db = dbf.newDocumentBuilder();
+
+		Document doc = db.parse(file);
+
+		doc.getDocumentElement().normalize();
+		NodeList namelist = doc.getElementsByTagName("target");
+		
+		if (namelist.getLength() > 0) {
+			NodeList targetChilds = namelist.item(0).getChildNodes();
+			for (int i = 0; i < targetChilds.getLength(); i++) {
+				Node node = targetChilds.item(i);
+				if(node.getNodeName().equals("nodePath")){
+					NodeList childs = node.getChildNodes();
+					for (int j = 0; j < childs.getLength(); j++) {
+						messageAssembly.set(childs.item(j).getNodeName(), childs.item(j).getTextContent());
+						
+					}
+					
+				}
+			}
+
+		}
+		
+
+		return messageAssembly;
+	}
+
+	
+
+	
 
 }
