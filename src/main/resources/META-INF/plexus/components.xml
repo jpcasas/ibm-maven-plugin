@@ -13,9 +13,10 @@
                     <process-resources>io.github.jpcasas.ibm.plugin:ibm-maven-plugin:resources</process-resources>
                     <generate-test-sources>io.github.jpcasas.ibm.plugin:ibm-maven-plugin:ace-create-tests</generate-test-sources>
                     <package>io.github.jpcasas.ibm.plugin:ibm-maven-plugin:ace-bar</package>
+                    <verify>io.github.jpcasas.ibm.plugin:ibm-maven-plugin:ace-verify</verify>
                     <install>org.apache.maven.plugins:maven-install-plugin:install</install>
                     <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
-                    <verify>org.apache.maven.plugins:maven-verify-plugin:ace-verify</verify>
+                    
 
                 </phases>
             </configuration>
