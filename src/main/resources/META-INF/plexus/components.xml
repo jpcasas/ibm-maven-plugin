@@ -14,6 +14,7 @@
                     <package>io.github.jpcasas.ibm.plugin:ibm-maven-plugin:ace-bar</package>
                     <install>org.apache.maven.plugins:maven-install-plugin:install</install>
                     <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+                    
 
                 </phases>
             </configuration>

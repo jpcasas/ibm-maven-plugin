@@ -42,8 +42,6 @@ public class DependenciesGoal extends AbstractMojo {
         getLog().info("          IBM ACE downloads dependencies            ");
         getLog().info("----------------------------------------------------");
         getLog().info(" ");
-        File basedir = project.getBasedir();
-
         executeMojo(
                 plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"), version("3.4.0")),
                 goal("unpack-dependencies"),
