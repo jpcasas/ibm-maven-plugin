@@ -2,9 +2,11 @@ package io.github.jpcasas.ibm.plugin.ace;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
@@ -53,7 +54,7 @@ public class SetKeyWords extends AbstractMojo {
 		List<File> bars = null;
 
 		if (barFileName == null) {
-			bars = (List<File>) FileUtils.listFiles(new File("."), new String[] { "bar" }, true);
+			bars = new ArrayList<>(FileUtils.listFiles(new File("."), new String[] { "bar" }, true));
 
 		} else {
 			bars = new ArrayList<File>();
@@ -73,11 +74,11 @@ public class SetKeyWords extends AbstractMojo {
 
 			addMQSIProps(info, session.getSystemProperties());
 
-			//setMQSIKeys(info, system);
-
-			generateKeywords(bar, info, system.get("Version"));
-
-			getLog().info("Generating KEYWORDS FOR " + bar + " DONE");
+			if (generateKeywords(bar, info, system.get("Version"))) {
+				getLog().info("Generating KEYWORDS FOR " + bar + " DONE");
+			} else {
+				fail = true;
+			}
 
 		}
 		if (fail)
@@ -99,68 +100,52 @@ public class SetKeyWords extends AbstractMojo {
 		}
 	}
 
-	private void setMQSIKeys(HashMap<String, String> info, Map<String, String> system) {
-		Set<String> keys = system.keySet();
-		for (String key : keys) {
-			if (key.startsWith("MQSI_")) {
-				String val = system.get(key);
-				String nkey = Tools.camelCase(key.replace("MQSI_", ""));
-				info.put(nkey, val);
-			}
-		}
-
-	}
-
-	private void generateKeywords(File barFile, HashMap<String, String> info, String version) {
-		File tempdir = FileUtils.getTempDirectory();
-		File tmpFolder = new File(tempdir, "keywords");
-		tmpFolder.mkdirs();
-
+	private boolean generateKeywords(File barFile, HashMap<String, String> info, String version) {
 		File barBackup = new File(barFile.getParentFile(), barFile.getName() + ".bak");
-		boolean problem = false;
+		File tmpFolder = null;
+		boolean backedUp = false;
 		try {
+			tmpFolder = Files.createTempDirectory("ace-keywords").toFile();
 			Tools.uncompress(barFile, tmpFolder);
-			ArrayList<File> files = Tools.searchFiles(tmpFolder, "appzip");
 			ZipParameters parameters = new ZipParameters();
 			parameters.setCompressionMethod(CompressionMethod.DEFLATE);
 			parameters.setCompressionLevel(CompressionLevel.NORMAL);
+			parameters.setFileNameInZip("META-INF/keywords.txt");
 
-			for (File file : files) {
-				net.lingala.zip4j.ZipFile appZip = new net.lingala.zip4j.ZipFile(file);
-				String keyWordsString = getKeyWordsString(info, version);
-				ByteArrayInputStream bais = new ByteArrayInputStream(keyWordsString.getBytes());
-				parameters.setFileNameInZip("META-INF/keywords.txt");
-				appZip.addStream(bais, parameters);
-				appZip.close();
+			String keyWordsString = getKeyWordsString(info, version);
+			for (File file : Tools.searchFiles(tmpFolder, "appzip")) {
+				try (net.lingala.zip4j.ZipFile appZip = new net.lingala.zip4j.ZipFile(file)) {
+					appZip.addStream(new ByteArrayInputStream(keyWordsString.getBytes(StandardCharsets.UTF_8)),
+							parameters);
+				}
 			}
-			String fileName = barFile.getName();
 
-			barFile.renameTo(barBackup);
-			File newBarFile = new File(barFile.getParentFile(), fileName);
-			FileOutputStream fos = new FileOutputStream(newBarFile);
-			ZipOutputStream zipOut = new ZipOutputStream(fos);
-			Tools.zipFolder(tmpFolder, "", zipOut);
-			zipOut.close();
-			fos.close();
-			barBackup.delete();
-			FileUtils.deleteDirectory(tmpFolder);
-		} catch (ZipException e) {
-			problem = true;
-
-		} catch (FileNotFoundException e) {
-			problem = true;
+			Files.move(barFile.toPath(), barBackup.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			backedUp = true;
+			try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(barFile))) {
+				Tools.zipFolder(tmpFolder, "", zipOut);
+			}
+			Files.delete(barBackup.toPath());
+			return true;
 		} catch (IOException e) {
-			problem = true;
+			getLog().error("Could not generate keywords for " + barFile.getName() + ": " + e.getMessage(), e);
+			if (backedUp) {
+				try {
+					Files.move(barBackup.toPath(), barFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				} catch (IOException restore) {
+					getLog().error("Unable to restore " + barFile + " from " + barBackup, restore);
+				}
+			}
+			return false;
+		} finally {
+			if (tmpFolder != null) {
+				FileUtils.deleteQuietly(tmpFolder);
+			}
 		}
-		if (problem) {
-			barBackup.renameTo(barFile);
-			getLog().info("COULD NOT GENERATE KEYWORDS FOR " + barFile.getName() + "...");
-		}
-
 	}
 
 	public static String getKeyWordsString(HashMap<String, String> info, String version) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (version != null) {
 			sb.append(String.format("$MQSI_VERSION=%s MQSI$ ", version));
 		}

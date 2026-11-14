@@ -6,11 +6,13 @@ import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 
+@Mojo(name = "ace-compile-tests")
 public class CompileJavaProject extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true)
     private MavenProject project;
@@ -31,7 +33,7 @@ public class CompileJavaProject extends AbstractMojo {
         File baseDir = project.getBasedir();
 
         File workspaceFolder = new File(baseDir.getParentFile(), workspaceName);
-        getLog().info("Workingspace " + workspaceFolder.getAbsolutePath() + " is present: " + workspaceFolder.exists());
+        getLog().info("Workspace " + workspaceFolder.getAbsolutePath() + " is present: " + workspaceFolder.exists());
         String projectTestName = project.getArtifactId() + "_Tests";
         File testProjectFolder = new File(workspaceFolder, projectTestName);
         getLog().info(
@@ -44,7 +46,7 @@ public class CompileJavaProject extends AbstractMojo {
             try {
                 Tools.createJar(testProjectFolder, projectTestName, fullClasspath);
             } catch (IOException e) {
-                getLog().error("IOException", e);
+                throw new MojoExecutionException("Unable to build the test project jar: " + e.getMessage(), e);
             }
 
         }

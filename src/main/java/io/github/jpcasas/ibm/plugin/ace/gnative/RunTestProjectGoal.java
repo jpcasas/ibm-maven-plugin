@@ -3,6 +3,7 @@ package io.github.jpcasas.ibm.plugin.ace.gnative;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -15,6 +16,7 @@ import org.apache.maven.project.MavenProject;
 import com.ibm.broker.MessageBrokerAPIException;
 import com.ibm.broker.config.appdev.FlowRendererBAR;
 
+import io.github.jpcasas.ibm.plugin.utils.ProcessRunner;
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 
 @Execute(phase = LifecyclePhase.PACKAGE)
@@ -39,13 +41,17 @@ public class RunTestProjectGoal extends AbstractMojo {
         File baseDir = project.getBasedir();
         getLog().info("Is MQSIPROFILE set:  " + Tools.isMqsiprofileSet());
         File workspaceFolder = new File(baseDir.getParentFile(), workspaceName);
-        getLog().info("Workingspace " + workspaceFolder.getAbsolutePath() + " is present: " + workspaceFolder.exists());
+        getLog().info("Workspace " + workspaceFolder.getAbsolutePath() + " is present: " + workspaceFolder.exists());
         String projectTestName = project.getArtifactId() + "_Tests";
         File testProjectFolder = new File(workspaceFolder, projectTestName);
         getLog().info(
                 "Test Project " + testProjectFolder.getAbsolutePath() + " is present: " + testProjectFolder.exists());
 
-        if (Tools.isMqsiprofileSet() && workspaceFolder.exists() && testProjectFolder.exists()) {
+        if (!Tools.isMqsiprofileSet()) {
+            getLog().warn("MQSI_BASE_FILEPATH not set (run mqsiprofile), skipping tests");
+            return;
+        }
+        if (workspaceFolder.exists() && testProjectFolder.exists()) {
 
             try {
 
@@ -62,25 +68,19 @@ public class RunTestProjectGoal extends AbstractMojo {
                 // install test bar
                 File isworkindir = new File(workspaceFolder, "isworkingdir");
                 isworkindir.mkdirs();
-                Tools.executeCommand("mqsibar --bar-file ArtifactToTest.bar --working-directory isworkingdir", getLog(),
-                        workspaceFolder);
+                ProcessRunner.run(Arrays.asList("mqsibar", "--bar-file", "ArtifactToTest.bar", "--working-directory",
+                        "isworkingdir"), getLog(), workspaceFolder, null, true, true);
 
-                Tools.executeCommand(
-                        "IntegrationServer -w isworkingdir --start-msgflows false --test-project " + projectTestName,
-                        getLog(), workspaceFolder);
+                ProcessRunner.run(Arrays.asList("IntegrationServer", "-w", "isworkingdir", "--start-msgflows", "false",
+                        "--test-project", projectTestName), getLog(), workspaceFolder, null, true, true);
 
             } catch (IOException e) {
-                getLog().error(e);
-                throw new MojoExecutionException("IOException", e);
+                throw new MojoExecutionException("Error running the tests: " + e.getMessage(), e);
             } catch (MessageBrokerAPIException e) {
-                getLog().error(e);
-                throw new MojoExecutionException("MessageBrokerAPIException", e);
-            } catch (InterruptedException e) {
-                getLog().error(e);
+                throw new MojoExecutionException("Error building the test bar: " + e.getMessage(), e);
             }
-
+        } else {
+            getLog().warn("No test project found, skipping tests");
         }
-
     }
-
 }

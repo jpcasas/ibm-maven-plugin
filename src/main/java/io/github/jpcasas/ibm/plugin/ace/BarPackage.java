@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 import com.ibm.broker.MessageBrokerAPIException;
 import com.ibm.broker.config.appdev.FlowRendererBAR;
 
-import io.github.jpcasas.ibm.plugin.model.ecliipse.ProjectDescriptor;
+import io.github.jpcasas.ibm.plugin.model.eclipse.ProjectDescriptor;
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 import net.lingala.zip4j.ZipFile;
 
@@ -67,8 +67,7 @@ public class BarPackage extends AbstractMojo {
 				String workspace = outputDirectory.getCanonicalPath();
 				ArrayList<String> individual = new ArrayList<String>();
 				individual.add(artifact);
-				getLog().info(workspace);
-				getLog().info(artifact);
+				getLog().debug("Workspace: " + workspace);
 
 				ProjectDescriptor descriptor = Tools.parseEclipseProject(projectf);
 
@@ -76,10 +75,10 @@ public class BarPackage extends AbstractMojo {
 				//
 				if (descriptor.getNatures().contains("com.ibm.etools.msgbroker.tooling.libraryNature")) {
 					File zipFile = new File(outputDirectory, artifact + ".zip");
-					ZipFile installer = new ZipFile(zipFile);
-					installer.addFolder(baseDir);
-					installer.close();
-					project.getArtifact().setFile(installer.getFile());
+					try (ZipFile installer = new ZipFile(zipFile)) {
+						installer.addFolder(baseDir);
+					}
+					project.getArtifact().setFile(zipFile);
 				} else {
 
 					FlowRendererBAR.write(workspace, individual, workspace, artifact + extension, 0, true);
@@ -87,18 +86,17 @@ public class BarPackage extends AbstractMojo {
 					FileUtils.copyFileToDirectory(barfile, baseDir);
 					getLog().info("BAR File copied from "+barfile.getAbsolutePath()+" to folder "+baseDir.getAbsolutePath());
 					File zipFile = new File(outputDirectory, artifact + ".zip");
-					ZipFile installer = new ZipFile(zipFile);
-					installer.addFile(barfile);
-					String[] res = resourcesFolders.split(",");
-					for (String rfolder : res) {
-						File rfile = new File(baseDir, rfolder);
-						if (rfile.exists() && rfile.isDirectory()) {
-							installer.addFolder(rfile);
+					try (ZipFile installer = new ZipFile(zipFile)) {
+						installer.addFile(barfile);
+						for (String rfolder : resourcesFolders.split(",")) {
+							File rfile = new File(baseDir, rfolder.trim());
+							if (rfile.isDirectory()) {
+								installer.addFolder(rfile);
+							}
 						}
 					}
-					installer.close();
-					project.getArtifact().setFile(installer.getFile());
-					getLog().info("Artifact "+installer.getFile().getAbsolutePath());
+					project.getArtifact().setFile(zipFile);
+					getLog().info("Artifact " + zipFile.getAbsolutePath());
 				}
 
 				
@@ -107,16 +105,11 @@ public class BarPackage extends AbstractMojo {
 				throw new MojoFailureException("Project not found, Check if the .project exists into the folder");
 			}
 		} catch (IOException e) {
-			throw new MojoFailureException("IOException", e);
+			throw new MojoFailureException("Error packaging bar: " + e.getMessage(), e);
 		} catch (MessageBrokerAPIException e) {
-			throw new MojoFailureException("MessageBrokerAPIException", e);
-
-		} catch (ParserConfigurationException e) {
-			getLog().error("Error parsing .project File [Parsing]");
-			throw new MojoFailureException("ParserConfigurationException", e);
-		} catch (SAXException e) {
-			getLog().error("Error parsing .project File [SAX]");
-			throw new MojoFailureException("SAXException", e);
+			throw new MojoFailureException("Error building bar: " + e.getMessage(), e);
+		} catch (ParserConfigurationException | SAXException e) {
+			throw new MojoFailureException("Error parsing .project file: " + e.getMessage(), e);
 		}
 
 	}

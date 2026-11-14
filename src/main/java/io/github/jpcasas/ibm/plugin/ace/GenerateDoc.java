@@ -2,7 +2,6 @@ package io.github.jpcasas.ibm.plugin.ace;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import io.github.jpcasas.ibm.plugin.utils.Tools;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.AbstractMojo;
@@ -48,10 +46,9 @@ public class GenerateDoc extends AbstractMojo {
 
         File root = new File(System.getProperty("user.dir"));
         File readme = new File(root, "README.md");
-        try {
-            PrintWriter meWrite = new PrintWriter(readme);
+        try (PrintWriter meWrite = new PrintWriter(readme, StandardCharsets.UTF_8.name())) {
 
-            String readmeModole = getFile("doc/README.md");
+            String readmeModel = Tools.readResource("doc/README.md");
 
             Properties props = project.getProperties();
 
@@ -60,8 +57,9 @@ public class GenerateDoc extends AbstractMojo {
             String groupId = project.getGroupId();
             Scm scm = project.getScm();
             String git = "";
-            if(scm!=null)
-                git = project.getScm().getDeveloperConnection();
+            if (scm != null && scm.getDeveloperConnection() != null) {
+                git = scm.getDeveloperConnection();
+            }
             String version = project.getVersion();
 
             HashMap<String, List<Content>> map = new HashMap<>();
@@ -75,15 +73,11 @@ public class GenerateDoc extends AbstractMojo {
             p.put("properties", getProperties(props));
             p.put("content", transformToList(map));
 
-            String readMeText = Tools.template(readmeModole, p, null);
+            meWrite.println(Tools.template(readmeModel, p, null));
+            getLog().info("Documentation written to " + readme.getAbsolutePath());
 
-            meWrite.println(readMeText);
-            meWrite.flush();
-            meWrite.close();
-
-        } catch (IOException e1) {
-
-            e1.printStackTrace();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to write " + readme + ": " + e.getMessage(), e);
         }
 
     }
@@ -134,17 +128,6 @@ public class GenerateDoc extends AbstractMojo {
                 map.put(ext, values);
         }
 
-    }
-
-    public String getFile(String fileName) throws IOException {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        try (InputStream inputStream = classLoader.getResourceAsStream(fileName)) {
-
-            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-
-        }
     }
 
 }

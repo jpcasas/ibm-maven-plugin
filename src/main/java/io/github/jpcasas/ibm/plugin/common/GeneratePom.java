@@ -2,20 +2,16 @@ package io.github.jpcasas.ibm.plugin.common;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -27,6 +23,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import io.github.jpcasas.ibm.plugin.utils.Tools;
+import io.github.jpcasas.ibm.plugin.utils.XmlUtils;
 
 /**
  *
@@ -69,18 +66,15 @@ public class GeneratePom extends AbstractMojo  implements CommonConstants {
 		try {
 			File projectFile = new File(project.getBasedir(), ".project");
 			if (projectFile.exists()) { // The file .project exists
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder dBuilder;
 				try {
-					dBuilder = dbFactory.newDocumentBuilder();
-					Document doc = dBuilder.parse(projectFile);
+					Document doc = XmlUtils.newDocumentBuilder().parse(projectFile);
 					doc.getDocumentElement().normalize();
 					String artifact = getProjectName(doc);
-					if (projectType == null || projectFile.length() == 0) {
+					if (projectType == null || projectType.trim().isEmpty()) {
 						projectType = getProjectType(doc);
 					}
 					if (projectType == null || !PROJECT_TYPES.contains(projectType)) {
-						throw new MojoExecutionException("Unknown project type");
+						throw new MojoExecutionException("Unknown project type: " + projectType + ", expected one of " + PROJECT_TYPES);
 					}
 					getLog().info("The type of the project is: " + projectType);
 					
@@ -90,17 +84,15 @@ public class GeneratePom extends AbstractMojo  implements CommonConstants {
 
 					createPom(projectType, artifact, groupId, workspace);
 
-				} catch (ParserConfigurationException e) {
-					e.printStackTrace();
-				} catch (SAXException e) {
-					e.printStackTrace();
-				} catch (XPathExpressionException e) {
-					e.printStackTrace();
+				} catch (ParserConfigurationException | SAXException | XPathExpressionException e) {
+					throw new MojoExecutionException("Unable to parse " + projectFile + ": " + e.getMessage(), e);
 				}
 
+			} else {
+				throw new MojoFailureException("No .project file found in " + project.getBasedir());
 			}
 		} catch (IOException e) {
-			throw new MojoExecutionException("No file model found it", e);
+			throw new MojoExecutionException("Unable to create pom.xml: " + e.getMessage(), e);
 		}
 
 	}
@@ -119,12 +111,11 @@ public class GeneratePom extends AbstractMojo  implements CommonConstants {
 			props.put("workspace", artifactId);
 		}
 
-		model = getFile(projectType + "_pom.xml");
+		model = Tools.readResource(projectType + "_pom.xml");
 		String pom = Tools.template(model, props, null);
-		PrintWriter pr = new PrintWriter(new File(project.getBasedir(), "pom.xml"));
-		pr.println(pom);
-		pr.flush();
-		pr.close();
+		try (PrintWriter pr = new PrintWriter(new File(project.getBasedir(), "pom.xml"), StandardCharsets.UTF_8.name())) {
+			pr.println(pom);
+		}
 
 	}
 
@@ -161,14 +152,4 @@ public class GeneratePom extends AbstractMojo  implements CommonConstants {
 		return text;
 	}
 
-	public String getFile(String fileName) throws IOException {
-
-		ClassLoader classLoader = getClass().getClassLoader();
-
-		try (InputStream inputStream = classLoader.getResourceAsStream(fileName)) {
-
-			return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-
-		}
-	}
 }

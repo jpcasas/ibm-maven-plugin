@@ -2,10 +2,12 @@ package io.github.jpcasas.ibm.plugin.ace;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -50,80 +52,89 @@ public class BarReadProperties extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		getLog().info("----------------------------------------------------");
-		getLog().info("               IBM ACE Generate Poperties           ");
+		getLog().info("               IBM ACE Generate Properties           ");
 		getLog().info("----------------------------------------------------");
 		getLog().info(" ");
 
 		String artifact = project.getArtifactId();
 		File barfile = new File(outputDirectory, artifact + extension);
-		if (barfile.exists()) {
-			try {
-				File resources = new File(pfolder);
-				resources.mkdirs();
-				File pmodel = new File(resources, "DEV.properties");
+		if (!barfile.exists()) {
+			getLog().warn("Bar file not found: " + barfile.getAbsolutePath());
+			return;
+		}
+		File resources = new File(pfolder);
+		resources.mkdirs();
+		File pmodel = new File(resources, "DEV.properties");
 
-				PrintWriter pr = (dryRun) ? null : new PrintWriter(pmodel);
+		String[] outputLines = readBar(barfile).split("\\r?\\n");
+		List<String> properties = extractDeploymentDescriptor(outputLines);
+		if (dryRun) {
+			properties.forEach(getLog()::info);
+			return;
+		}
+		try (PrintWriter pr = new PrintWriter(pmodel, StandardCharsets.UTF_8.name())) {
+			properties.forEach(pr::println);
+		} catch (IOException e) {
+			throw new MojoExecutionException("Can't write file " + pmodel, e);
+		}
+		try {
+			Tools.copyFiles(pmodel, resources, env, pextension);
+		} catch (IOException e) {
+			throw new MojoExecutionException("Can't copy files", e);
+		}
+	}
 
-				ByteArrayOutputStream baout = new ByteArrayOutputStream();
-				System.setOut(new PrintStream(baout));
-				String params[] = new String[] { "-r", "-b", barfile.getAbsolutePath(), "-runtime" };
-				ReadBar.execute(params);
-				String outputLines[] = new String(baout.toByteArray()).split("\n");
-				boolean print = false;
-				int spaces = 0;
-				boolean start = false;
-				for (String string : outputLines) {
-					if (print) {
-						if (start) {
-							spaces = getSpaces(string);
-							start = false;
-						}
-						if (spaces == getSpaces(string)) {
-							if (!dryRun) {
-								if (pr != null) {
-									pr.println(string.trim());
-									pr.flush();
-								}
-							} else {
-								getLog().info(string.trim());
-							}
-						} else {
-							print = false;
-						}
+	/**
+	 * Runs IBM's ReadBar, which prints to System.out, capturing its output. System.out is
+	 * always restored (it used to stay redirected for the rest of the Maven build).
+	 */
+	private static synchronized String readBar(File barfile) {
+		PrintStream original = System.out;
+		ByteArrayOutputStream baout = new ByteArrayOutputStream();
+		try (PrintStream capture = new PrintStream(baout, true, StandardCharsets.UTF_8.name())) {
+			System.setOut(capture);
+			ReadBar.execute(new String[] { "-r", "-b", barfile.getAbsolutePath(), "-runtime" });
+		} catch (java.io.UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
+		} finally {
+			System.setOut(original);
+		}
+		return new String(baout.toByteArray(), StandardCharsets.UTF_8);
+	}
 
-					}
-
-					if (string.contains("Deployment descriptor")) {
-						print = true;
-						start = true;
-
-					}
-
+	/** Returns the lines of the first "Deployment descriptor" block (same indentation). */
+	static List<String> extractDeploymentDescriptor(String[] outputLines) {
+		List<String> result = new ArrayList<>();
+		boolean print = false;
+		boolean start = false;
+		int spaces = 0;
+		for (String line : outputLines) {
+			if (print) {
+				if (start) {
+					spaces = getSpaces(line);
+					start = false;
 				}
-				if (!dryRun) {
-					if (pr != null)
-						pr.close();
-					Tools.copyFiles(pmodel, resources, env, pextension);
+				if (spaces == getSpaces(line) && !line.trim().isEmpty()) {
+					result.add(line.trim());
+				} else {
+					print = false;
 				}
-			} catch (FileNotFoundException e) {
-				throw new MojoExecutionException("Can't write file", e);
-			} catch (IOException e) {
-				throw new MojoExecutionException("Can't copy files", e);
+			}
+			if (line.contains("Deployment descriptor")) {
+				print = true;
+				start = true;
 			}
 		}
-
+		return result;
 	}
 
 	private static int getSpaces(String string) {
-		int sz = string.length();
 		int count = 1;
-		for (int i = 0; i < sz; i++) {
-			if (((int) string.charAt(i)) == 32) {
-				count++;
-			} else {
+		for (int i = 0; i < string.length(); i++) {
+			if (string.charAt(i) != ' ') {
 				return count;
 			}
-
+			count++;
 		}
 		return count;
 	}
