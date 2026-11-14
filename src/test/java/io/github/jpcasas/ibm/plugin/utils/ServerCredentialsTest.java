@@ -11,11 +11,14 @@ import org.junit.jupiter.api.Test;
 
 class ServerCredentialsTest {
 
+	// test fixture, not a real credential
+	private static final String SETTINGS_PASSWORD = "dummy";
+
 	private static Settings settings() {
 		Server s = new Server();
 		s.setId("mq-dev");
 		s.setUsername("mqadmin");
-		s.setPassword("fromSettings");
+		s.setPassword(SETTINGS_PASSWORD);
 		s.setPrivateKey("/keys/id_ed25519");
 		Settings settings = new Settings();
 		settings.addServer(s);
@@ -33,7 +36,7 @@ class ServerCredentialsTest {
 	void readsServerFromSettings() throws Exception {
 		ServerCredentials c = ServerCredentials.resolve("mq-dev", null, "", settings(), null);
 		assertEquals("mqadmin", c.getUsername());
-		assertEquals("fromSettings", c.getPassword());
+		assertEquals(SETTINGS_PASSWORD, c.getPassword());
 		assertEquals("/keys/id_ed25519", c.getPrivateKey());
 	}
 
@@ -41,7 +44,7 @@ class ServerCredentialsTest {
 	void explicitValuesWin() throws Exception {
 		ServerCredentials c = ServerCredentials.resolve("mq-dev", "other", null, settings(), null);
 		assertEquals("other", c.getUsername());
-		assertEquals("fromSettings", c.getPassword());
+		assertEquals(SETTINGS_PASSWORD, c.getPassword());
 	}
 
 	@Test
