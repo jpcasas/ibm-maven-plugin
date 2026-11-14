@@ -73,7 +73,20 @@ echo "REFRESH SECURITY(*)" | runmqsc <QueueManager>
 ```
 
 
+## Trust the MQ server host key
+
+Since 1.1.0 the SSH host key is verified (`mq.ssh.strictHostKeyChecking=yes`). Add the server to
+`known_hosts` once (or use `-Dmq.ssh.strictHostKeyChecking=accept-new` to trust it on first use):
+
+```bash
+ssh-keyscan -p 2222 -H localhost >> ~/.ssh/known_hosts
+```
+
 ## Deployment using ssh user / password
+
+> Passwords given with `-Dmq.password` stay in the shell history. Prefer a `<server>` in
+> `settings.xml` (password encrypted with `mvn --encrypt-password`) and `-Dmq.serverId=<id>`,
+> see [doc/MQ](../../doc/MQ/README.md).
 
 
 ```bash
@@ -101,9 +114,14 @@ mvn -Dmq.ssh.port=2222 -Dmq.servers=localhost -Dmq.user=mqadmin -Dmq.queueManage
 
 # Known Issues
 
+## com.jcraft.jsch.JSchException: reject HostKey / known_hosts file not found
+
+The MQ server is not in `~/.ssh/known_hosts`: see "Trust the MQ server host key" above.
+
 ## com.jcraft.jsch.JSchException: invalid privatekey
 
-you need to convert the key to a supported format 
+Only with versions before 1.1.0 (1.1.0 supports OpenSSH, ed25519 and ecdsa keys).
+Convert the key to the PEM format 
 
 ```bash
 
