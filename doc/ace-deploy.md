@@ -28,3 +28,5 @@ Search and deploy bar files
 | ibm.ace.bar                    | String  |         | 1.0.0 | Location of bar file to deploy               |
 Since 1.1.0 the TLS certificate of the server is verified (with the JVM default trust store, or
 `ibm.ace.sec.truststore` if set) and the goal fails if any bar file is not deployed.
+HTTP redirects are not followed, so credentials are only sent to `ibm.ace.host`. Without
+`ibm.ace.useSSL=true` credentials travel in clear text (a warning is logged).

@@ -167,4 +167,18 @@ class ToolsTest {
 		}
 		assertFalse(Tools.isPortAvailable("127.0.0.1", closed, 2000));
 	}
+
+	@Test
+	void uncompressRejectsZipSlip(@TempDir Path dir) throws IOException {
+		File zip = dir.resolve("evil.bar").toFile();
+		try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zip))) {
+			out.putNextEntry(new java.util.zip.ZipEntry("../../evil.txt"));
+			out.write("pwned".getBytes(StandardCharsets.UTF_8));
+			out.closeEntry();
+		}
+		File dest = dir.resolve("a/b/out").toFile();
+		assertThrows(IOException.class, () -> Tools.uncompress(zip, dest));
+		assertFalse(dir.resolve("a/evil.txt").toFile().exists());
+		assertFalse(dir.resolve("evil.txt").toFile().exists());
+	}
 }

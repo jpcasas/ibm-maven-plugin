@@ -2,6 +2,9 @@ package io.github.jpcasas.ibm.plugin.ace;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +113,10 @@ public class BarDeploy extends AbstractMojo {
 		}
 
 		ServerCredentials creds = ServerCredentials.resolve(serverId, user, password, settings, settingsDecrypter);
+		if (creds.hasUsername() && !useSSL) {
+			getLog().warn("Credentials are sent in clear text over HTTP to " + host
+					+ ": enable ibm.ace.useSSL=true to protect them");
+		}
 		try (UnirestInstance http = createClient()) {
 			String type = detectDeploymentType(http, creds);
 			List<String> failed = new ArrayList<>();
@@ -132,7 +139,8 @@ public class BarDeploy extends AbstractMojo {
 
 	private UnirestInstance createClient() throws MojoExecutionException {
 		UnirestInstance http = Unirest.spawnInstance();
-		http.config().connectTimeout(timeout * 1000).socketTimeout(timeout * 1000);
+		// no redirects: they would resend the Authorization header, possibly to another host
+		http.config().connectTimeout(timeout * 1000).socketTimeout(timeout * 1000).followRedirects(false);
 		if (useSSL) {
 			if (insecure) {
 				getLog().warn("TLS certificate verification is DISABLED (ibm.ace.ssl.insecure=true)");
@@ -154,6 +162,15 @@ public class BarDeploy extends AbstractMojo {
 		return String.format("%s://%s:%d/apiv2", useSSL ? "https" : "http", host, port);
 	}
 
+	/** Encodes a value used as a single URL path segment (e.g. "../x" cannot change the path). */
+	static String pathSegment(String value) {
+		try {
+			return URLEncoder.encode(value, StandardCharsets.UTF_8.name()).replace("+", "%20");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	private <R extends HttpRequest<?>> R auth(R request, ServerCredentials creds) {
 		if (creds.hasUsername()) {
 			String pass = creds.getPassword() == null ? "" : creds.getPassword();
@@ -163,7 +180,8 @@ public class BarDeploy extends AbstractMojo {
 	}
 
 	private boolean deploy(UnirestInstance http, ServerCredentials creds, File bar, String is) throws IOException {
-		String url = is != null ? String.format("%s/servers/%s/deploy", baseUrl(), is) : baseUrl() + "/deploy";
+		String url = is != null ? String.format("%s/servers/%s/deploy", baseUrl(), pathSegment(is))
+				: baseUrl() + "/deploy";
 		HttpResponse<DeployResult> response = auth(http.post(url), creds).header("accept", "application/json")
 				.header("Content-Type", "application/octet-stream").body(Tools.toByteArray(bar))
 				.asObject(DeployResult.class);

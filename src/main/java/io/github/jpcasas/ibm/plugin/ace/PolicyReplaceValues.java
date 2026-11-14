@@ -54,6 +54,11 @@ public class PolicyReplaceValues extends AbstractMojo {
         for (String key : props.stringPropertyNames()) {
             int dot = key.indexOf('.');
             if (dot > 0 && dot < key.length() - 1) {
+                String policyName = key.substring(0, dot);
+                if (!isSafePolicyName(policyName)) {
+                    throw new MojoExecutionException("Invalid policy name '" + policyName + "' in " + propertiesFile
+                            + ": it must be a file name without path separators");
+                }
                 byPolicy.computeIfAbsent(key.substring(0, dot), k -> new TreeMap<>()).put(key.substring(dot + 1),
                         props.getProperty(key));
             }
@@ -91,5 +96,10 @@ public class PolicyReplaceValues extends AbstractMojo {
         }
 
         getLog().info("-------------------------END------------------------");
+    }
+
+    /** The policy name becomes a file name: path separators would allow writing outside the project. */
+    static boolean isSafePolicyName(String name) {
+        return !name.isEmpty() && name.indexOf('/') < 0 && name.indexOf('\\') < 0 && name.indexOf('\0') < 0;
     }
 }

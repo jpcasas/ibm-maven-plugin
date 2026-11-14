@@ -19,6 +19,14 @@
 * Credentials can be read from `settings.xml` (`ibm.ace.serverId`, `mq.serverId`), including passwords
   encrypted with `mvn --encrypt-password`.
 * XML parsing (`.project`, `.policyxml`, `.mxml`) is protected against XXE.
+* `ace-deploy` no longer follows HTTP redirects (they resent the `Authorization` header to the
+  redirect target), URL-encodes the integration server name and warns when credentials are sent over
+  plain HTTP.
+* `ace-policy-replace` rejects policy names with path separators (writing outside the project folder).
+* Dependencies with known vulnerabilities updated (checked with OSV): Jackson 2.18.12 (17 advisories
+  in 2.18.2, several HIGH), BouncyCastle 1.87 and org.json 20260814 (transitive from the MQ client,
+  including 2 CRITICAL), plexus-utils 3.6.2 (directory traversal), commons-lang3 3.22.0.
+  Dependabot is configured to keep dependencies and GitHub Actions up to date.
 * `mq-deploy-pcf` uses MQCSP authentication and builds the TLS socket factory from `mq.keystore`
   (the parameter was ignored before).
 
