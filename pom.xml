@@ -40,7 +40,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<!-- Runtime target. Building requires JDK 11+ (tested with 17 and 21). -->
 		<maven.compiler.release>8</maven.compiler.release>
-		<maven.version>3.9.9</maven.version>
+		<maven.version>3.10.1</maven.version>
 		<maven-plugin-tools.version>3.15.1</maven-plugin-tools.version>
 		<!-- Version of the IBM ACE jars installed in the local repository (see Install-ibm-jars.md) -->
 		<ibm.ace.version>12.0.6</ibm.ace.version>
