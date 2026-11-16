@@ -1,13 +1,14 @@
 # ibm-maven-plugin
 
-Maven plugin for: 
+[![CI](https://github.com/jpcasas/ibm-maven-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/jpcasas/ibm-maven-plugin/actions/workflows/ci.yml)
 
-* IBM App Connect Enterprice (ACE) 11 / 12 / IBM Integration Bus (IIB) 10
-* IBM MQ Series (Linux Installations)
-* IBM API Connect (**soon**)
+Maven plugin for:
+
+* IBM App Connect Enterprise (ACE) 11 / 12 / IBM Integration Bus (IIB) 10
+* IBM MQ (Linux installations through SSH, any platform through PCF)
 
 # About
-This plugin aims to help the developpers with goals like:
+This plugin aims to help developers with goals like:
 
 * Creates mq scripts from flows (search in all flows MQ Objects to create mq scripts)
 * Creates a basic documentation
@@ -16,16 +17,16 @@ This plugin aims to help the developpers with goals like:
 
 **Also provides**
 
-* Maven Dependency features. include your libraries in
-* Works with packagebar. no toolkit need it for build bars (headless builds)
-* MQ SSH Deployment multi-instance topology supported (API & PCF Deployment soon) 
-* Buld & deploy bars.
+* Maven dependency management: include your libraries as Maven dependencies
+* Works with packagebar: no toolkit needed to build bars (headless builds)
+* MQ deployment through SSH (multi-instance topology supported) or PCF
+* Build & deploy bars
 
-**Coming soon**
+**Roadmap** (not implemented yet, see the [issues](https://github.com/jpcasas/ibm-maven-plugin/issues))
 
-* Creates a jenkins/gitlab pipelines (soon more)
-* APIC Goals
-* Docker File and Kubernetes deployment descriptors
+* Jenkins/GitLab pipeline templates
+* IBM API Connect goals
+* Dockerfile and Kubernetes deployment descriptors
 
 **Not supported**
 
@@ -34,7 +35,7 @@ This plugin aims to help the developpers with goals like:
 
 # Requirements
 
-**Installation of IBM Libraries are used by the following goals:**
+**The IBM libraries must be installed in your local Maven repository for the following goals:**
 
 - **Build bars**
 
@@ -46,18 +47,20 @@ This plugin aims to help the developpers with goals like:
 
 ## Install IBM Libraries
 
-```
-mvn install:install-file -Dfile="<INSTALL_PATH>/<VERSION>/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
-mvn install:install-file -Dfile="<INSTALL_PATH>/<VERSION>/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
-
-Example:
-
-mvn install:install-file -Dfile="/home/jpcasas/data/programs/ace-12.0.6.0/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
-mvn install:install-file -Dfile="/home/jpcasas/data/programs/ace-12.0.6.0/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
-
+```bash
+mvn install:install-file -Dfile="<ACE_HOME>/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
+mvn install:install-file -Dfile="<ACE_HOME>/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
 ```
 
-**The other goals can be run without Installing the libraries** 
+Example (`<ACE_HOME>` is the ACE installation folder, e.g. `/opt/IBM/ace-12.0.6.0`; from an ACE
+console it is `$MQSI_BASE_FILEPATH`, see [Install-ibm-jars.md](Install-ibm-jars.md)):
+
+```bash
+mvn install:install-file -Dfile="/opt/IBM/ace-12.0.6.0/common/classes/IntegrationAPI.jar" -DgroupId=com.ibm -DartifactId=IntegrationAPI -Dversion=12.0.6 -Dpackaging=jar
+mvn install:install-file -Dfile="/opt/IBM/ace-12.0.6.0/server/classes/brokerutil.jar" -DgroupId=com.ibm -DartifactId=brokerutil -Dversion=12.0.6 -Dpackaging=jar
+```
+
+**The other goals can be run without installing the libraries**
 
 ## Maven configuration
 
@@ -150,13 +153,25 @@ Examples how to do to run MQ Scripts in remote Queue Managers
 
   [here](examples/06-MQDeployment/README.md) 
 
-# Work in progress documentation
+# Security notes (1.1.0)
 
-* Dependecy Management
-* CI Servers templates
+* SSH host keys are verified against `~/.ssh/known_hosts` (`mq.ssh.strictHostKeyChecking`).
+* TLS certificates of the ACE administration API are verified (`ibm.ace.ssl.insecure=true` only for tests).
+* Read credentials from `settings.xml` (`ibm.ace.serverId`, `mq.serverId`) instead of `-D...password=`.
 
+See the [CHANGELOG](CHANGELOG.md) for the upgrade notes.
 
+# Building from source
 
+The IBM jars are proprietary. To build and run the unit tests without an ACE installation, install
+the compile-only stubs (CI does the same). JDK 11+ is required to build; the plugin runs on Java 8+.
 
+```bash
+./ci/install-ibm-stubs.sh
+mvn verify
+```
 
+To use the built plugin with ACE, install the real IBM jars instead (see above).
 
+Release: `mvn -P release deploy` (needs a `central` server token for the Central Portal and GPG).
+Dependency vulnerability scan: `mvn -P owasp verify`.

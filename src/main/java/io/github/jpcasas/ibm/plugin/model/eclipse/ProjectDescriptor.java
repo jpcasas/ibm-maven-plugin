@@ -1,4 +1,4 @@
-package io.github.jpcasas.ibm.plugin.model.ecliipse;
+package io.github.jpcasas.ibm.plugin.model.eclipse;
 
 
 

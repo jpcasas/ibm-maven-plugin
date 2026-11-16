@@ -1,34 +1,88 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<groupId>io.github.jpcasas.ibm.plugin.pom</groupId>
-		<artifactId>ibm-pom-parent</artifactId>
-		<version>1.0.3</version>
-	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.jpcasas.ibm.plugin</groupId>
 	<artifactId>ibm-maven-plugin</artifactId>
-	<version>1.0.9-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>ibm-maven-plugin</name>
-	<description>Plugin mande for IBM ACE MQ AND APIC Projects to support build and deployment cycle</description>
-	<url>https://github.com/jpcasas/ibm-maven-plugin.git</url>
+	<description>Maven plugin for IBM App Connect Enterprise (ACE), IBM Integration Bus and IBM MQ projects to support the build and deployment cycle</description>
+	<url>https://github.com/jpcasas/ibm-maven-plugin</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Juan Pablo Casas</name>
+			<email>jpcasas@pm.me</email>
+			<organizationUrl>https://github.com/jpcasas/</organizationUrl>
+		</developer>
+	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/jpcasas/ibm-maven-plugin.git</connection>
+		<connection>scm:git:https://github.com/jpcasas/ibm-maven-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:jpcasas/ibm-maven-plugin.git</developerConnection>
-		<url>http://github.com/jpcasas/ibm-maven-plugin/tree/master</url>
+		<url>https://github.com/jpcasas/ibm-maven-plugin/tree/master</url>
 		<tag>HEAD</tag>
 	</scm>
 
+	<prerequisites>
+		<maven>3.6.3</maven>
+	</prerequisites>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.version>3.8.6</maven.version>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- Runtime target. Building requires JDK 11+ (tested with 17 and 21). -->
+		<maven.compiler.release>8</maven.compiler.release>
+		<maven.version>3.9.9</maven.version>
+		<maven-plugin-tools.version>3.15.1</maven-plugin-tools.version>
+		<!-- Version of the IBM ACE jars installed in the local repository (see Install-ibm-jars.md) -->
+		<ibm.ace.version>12.0.6</ibm.ace.version>
+		<jackson.version>2.18.12</jackson.version>
+		<bouncycastle.version>1.87</bouncycastle.version>
 	</properties>
-	<dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- Transitive dependencies of the MQ client pinned to versions without known CVEs -->
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk18on</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk18on</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcutil-jdk18on</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20260814</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- Maven API (provided by the Maven runtime) -->
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
@@ -49,306 +103,237 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-compat</artifactId>
+			<artifactId>maven-settings</artifactId>
 			<version>${maven.version}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
 			<artifactId>maven-plugin-annotations</artifactId>
-			<version>3.6.0</version>
+			<version>${maven-plugin-tools.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugin-testing</groupId>
-			<artifactId>maven-plugin-testing-harness</artifactId>
-			<version>3.3.0</version>
-			<scope>test</scope>
-		</dependency>
+
+		<!-- IBM -->
 		<dependency>
 			<groupId>com.ibm.mq</groupId>
 			<artifactId>com.ibm.mq.allclient</artifactId>
-			<version>9.1.5.0</version>
+			<version>9.4.1.0</version>
 		</dependency>
-		<!--  USED TO PACKAGE BAR / READ FLOWS TO GENERATE SCRIPTS -->
+		<!-- USED TO PACKAGE BAR / READ FLOWS TO GENERATE SCRIPTS (proprietary, install manually) -->
 		<dependency>
 			<groupId>com.ibm</groupId>
 			<artifactId>IntegrationAPI</artifactId>
-			<version>12.0.6</version>
-			<!-- <scope>system</scope>
-			<systemPath>${env.MQSI_BASE_FILEPATH}/common/classes/IntegrationAPI.jar</systemPath> -->
+			<version>${ibm.ace.version}</version>
 		</dependency>
-		<!-- USED TO READ BAR AND OVERRIDE BAR-->
+		<!-- USED TO READ BAR AND OVERRIDE BAR (proprietary, install manually) -->
 		<dependency>
 			<groupId>com.ibm</groupId>
 			<artifactId>brokerutil</artifactId>
-			<version>12.0.6</version>
-			<!--<scope>system</scope>
-			<systemPath>${env.MQSI_BASE_FILEPATH}/server/classes/brokerutil.jar</systemPath> -->
+			<version>${ibm.ace.version}</version>
 		</dependency>
+
+		<!-- Utilities -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.11.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch</artifactId>
-			<version>0.1.55</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.spullara.mustache.java</groupId>
-			<artifactId>compiler</artifactId>
-			<version>0.9.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.9.8</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>2.9.8</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-yaml</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.9.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-utils</artifactId>
-			<version>3.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lingala.zip4j</groupId>
-			<artifactId>zip4j</artifactId>
-			<version>2.11.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.20</version>
-			<scope>provided</scope>
-			<!--<optional>true</optional>-->
+			<version>2.18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.11</version>
+			<version>3.22.0</version>
 		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/com.konghq/unirest-java -->
+		<!-- Maintained fork of JSch (supports rsa-sha2, ed25519, OpenSSH keys, accept-new) -->
+		<dependency>
+			<groupId>com.github.mwiede</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.2.21</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.spullara.mustache.java</groupId>
+			<artifactId>compiler</artifactId>
+			<version>0.9.14</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>3.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lingala.zip4j</groupId>
+			<artifactId>zip4j</artifactId>
+			<version>2.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.36</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.konghq</groupId>
 			<artifactId>unirest-java</artifactId>
-			<version>3.13.13</version>
+			<version>3.14.5</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.twdata.maven</groupId>
 			<artifactId>mojo-executor</artifactId>
 			<version>2.4.0</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
-			<version>1.10.12</version>
+			<version>1.10.15</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.ant/ant-launcher -->
+
+		<!-- Tests -->
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-launcher</artifactId>
-			<version>1.10.12</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.11.4</version>
+			<scope>test</scope>
 		</dependency>
-
-
+		<!-- Embedded SSH server for SshClient tests -->
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-core</artifactId>
+			<version>2.14.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.36</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
 	<build>
 		<pluginManagement>
-			<!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
 			<plugins>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.4.0</version>
 				</plugin>
-				<!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_maven-plugin_packaging -->
 				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.0.2</version>
+					<version>3.3.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
+					<version>3.13.0</version>
 				</plugin>
-
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.1</version>
+					<version>3.5.2</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.0.2</version>
+					<version>3.4.2</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-install-plugin</artifactId>
-					<version>2.5.2</version>
+					<version>3.1.3</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-deploy-plugin</artifactId>
-					<version>2.8.2</version>
+					<version>3.1.3</version>
 				</plugin>
 				<plugin>
-					<artifactId>maven-invoker-plugin</artifactId>
-					<version>3.1.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.7.1</version>
+					<version>3.21.0</version>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.8.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-plugin-plugin</artifactId>
+					<version>${maven-plugin-tools.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>8</source>
-					<target>8</target>
-				</configuration>
-			</plugin>
-			<plugin>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.6.0</version>
 				<configuration>
 					<goalPrefix>ibm</goalPrefix>
 				</configuration>
+				<executions>
+					<execution>
+						<id>help-goal</id>
+						<goals>
+							<goal>helpmojo</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
+
 	<profiles>
+		<!-- Release to Maven Central: mvn -P release deploy (requires a "central" server in settings.xml and GPG) -->
 		<profile>
-			<id>run-its</id>
+			<id>release</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-invoker-plugin</artifactId>
-						<version>3.1.0</version>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>3.1.1</version>
 						<configuration>
-							<debug>true</debug>
-							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-							<pomIncludes>
-								<pomInclude>*/pom.xml</pomInclude>
-							</pomIncludes>
-							<postBuildHookScript>verify</postBuildHookScript>
-							<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-							<settingsFile>src/it/settings.xml</settingsFile>
-							<goals>
-								<goal>clean</goal>
-								<goal>test-compile</goal>
-							</goals>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>deploy</goals>
+							<tagNameFormat>v@{project.version}</tagNameFormat>
 						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.3.1</version>
 						<executions>
 							<execution>
-								<id>integration-test</id>
+								<id>attach-sources</id>
 								<goals>
-									<goal>install</goal>
-									<goal>integration-test</goal>
-									<goal>verify</goal>
+									<goal>jar-no-fork</goal>
 								</goals>
 							</execution>
 						</executions>
 					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>release</id>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>ossrh</id>
-					<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-				</snapshotRepository>
-				<repository>
-					<id>ossrh</id>
-					<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-				</repository>
-			</distributionManagement>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>external.atlassian.jgitflow</groupId>
-						<artifactId>jgitflow-maven-plugin</artifactId>
-						<version>1.0-m5.1</version>
-						<configuration>
-							<username>${env.GIT_USERNAME}</username>
-							<password>${env.GIT_PASSWORD}</password>
-							<allowSnapshots>true</allowSnapshots>
-							<pushFeatures>true</pushFeatures>
-							<enableSshAgent>true</enableSshAgent>
-							<pushReleases>true</pushReleases>
-							<allowUntracked>true</allowUntracked>
-						</configuration>
-					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-release-plugin</artifactId>
-						<version>2.5.3</version>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.11.2</version>
 						<configuration>
-							<autoVersionSubmodules>true</autoVersionSubmodules>
-							<useReleaseProfile>false</useReleaseProfile>
-							<releaseProfiles>release</releaseProfiles>
-							<goals>deploy</goals>
+							<doclint>none</doclint>
 						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.13</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
-						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
+						<version>3.2.7</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -356,17 +341,37 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
-								<configuration>
-									<keyname>${gpg.keyname}</keyname>
-									<passphraseServerId>${gpg.keyname}</passphraseServerId>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>
+					<!-- OSSRH (s01.oss.sonatype.org) was shut down in 2025: publish through the Central Portal -->
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>0.7.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<autoPublish>true</autoPublish>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- Dependency vulnerability scan: mvn -P owasp verify (set NVD_API_KEY for faster updates) -->
+		<profile>
+			<id>owasp</id>
+			<build>
+				<plugins>
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>6.1.1</version>
+						<version>11.1.1</version>
+						<configuration>
+							<nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
+							<failBuildOnCVSS>7</failBuildOnCVSS>
+						</configuration>
 						<executions>
 							<execution>
 								<goals>
@@ -375,32 +380,8 @@
 							</execution>
 						</executions>
 					</plugin>
-
 				</plugins>
-
-
 			</build>
-
-
 		</profile>
-
-
 	</profiles>
-
-
-	<licenses>
-		<license>
-			<name>MIT License</name>
-			<url>https://opensource.org/licenses/MIT</url>
-		</license>
-	</licenses>
-
-	<developers>
-		<developer>
-			<name>Juan Pablo Casas</name>
-			<email>jpcasas@pm.me</email>
-			<organization>None</organization>
-			<organizationUrl>https://github.com/jpcasas/</organizationUrl>
-		</developer>
-	</developers>
 </project>

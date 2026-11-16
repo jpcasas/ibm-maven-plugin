@@ -2,20 +2,17 @@ package io.github.jpcasas.ibm.plugin.ace;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import io.github.jpcasas.ibm.plugin.model.MessageAssembly;
+import io.github.jpcasas.ibm.plugin.utils.ProcessRunner;
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -69,28 +66,31 @@ public class GenerateTests extends AbstractMojo {
                     String fullJavaName = groupTests+"."+javaName;
                     String path = testMessage.getParentFile().getAbsolutePath();
                     File prj = new File(testsProjectParentFolder, project.getArtifactId()+"_Tests");
-                    String exec = String.format(cmd, path, prj, fullJavaName);
-                    
-                    getLog().info(exec);
-                    Tools.executeCommand(exec, getLog(), null,  true, null, false);
+                    // Arguments are substituted after splitting, so paths with spaces stay a single argument
+                    List<String> command = new ArrayList<>();
+                    Object[] values = { path, prj.getAbsolutePath(), fullJavaName };
+                    int next = 0;
+                    for (String token : ProcessRunner.split(cmd)) {
+                        if (token.contains("%s") && next < values.length) {
+                            command.add(token.replace("%s", String.valueOf(values[next++])));
+                        } else {
+                            command.add(token);
+                        }
+                    }
+                    getLog().info(String.join(" ", command));
+                    ProcessRunner.run(command, getLog(), null, null, true, true);
 
-                } catch (ParserConfigurationException e) {
-                    getLog().error("ParserConfigurationException", e);
-                    
-                } catch (SAXException e) {
-                    getLog().error("SAXException", e);
-                    
+                } catch (ParserConfigurationException | SAXException e) {
+                    throw new MojoExecutionException("Unable to parse message assembly: " + e.getMessage(), e);
                 } catch (IOException e) {
-                    getLog().error("IOException", e);
-                    
-                } catch (InterruptedException e) {
-                    getLog().error("InterruptedException", e);
+                    throw new MojoExecutionException("Unable to generate tests: " + e.getMessage(), e);
                 }
-                
+            } else {
+                getLog().warn("No recorded message assemblies (*.mxml) found, no tests generated");
             }
 
         }else{
-            getLog().error("No mqsiprofile setted, please run in a IBM App Connect console");
+            getLog().error("mqsiprofile not set or ibmint not found, please run in an IBM App Connect console");
             throw new MojoFailureException("No MQSIPROFILE Environment Variables");
         }
 

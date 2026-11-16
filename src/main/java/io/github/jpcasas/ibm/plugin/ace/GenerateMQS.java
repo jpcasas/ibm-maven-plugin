@@ -2,12 +2,13 @@ package io.github.jpcasas.ibm.plugin.ace;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.ibm.broker.config.appdev.FlowRendererMSGFLOW;
 import com.ibm.broker.config.appdev.MessageFlow;
@@ -16,7 +17,6 @@ import com.ibm.broker.config.appdev.nodes.MQInputNode;
 import com.ibm.broker.config.appdev.nodes.MQOutputNode;
 import io.github.jpcasas.ibm.plugin.utils.Tools;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -54,83 +54,59 @@ public class GenerateMQS extends AbstractMojo {
 
         File root = new File(System.getProperty("user.dir"));
 
-        if (!install.exists()) {
-            install.mkdirs();
+        ArrayList<File> flows = Tools.searchFiles(root, "msgflow");
+        flows.addAll(Tools.searchFiles(root, "subflow"));
+        Set<String> queues = searchQueues(flows);
+        if (queues.isEmpty()) {
+            getLog().warn("No MQInput/MQOutput nodes found, no MQ scripts generated");
+            return;
         }
-        if (!uninstall.exists()) {
-            uninstall.mkdirs();
+        if (dryRun) {
+            queues.forEach(q -> getLog().info(" QUEUE " + q));
+            return;
         }
+
+        install.mkdirs();
+        uninstall.mkdirs();
         File iscript = new File(install, installFileName);
         File uscript = new File(uninstall, uninstallFileName);
-        try {
+        try (PrintWriter prin = new PrintWriter(iscript, StandardCharsets.UTF_8.name());
+                PrintWriter prun = new PrintWriter(uscript, StandardCharsets.UTF_8.name())) {
 
-            PrintWriter prin = new PrintWriter(iscript);
-            PrintWriter prun = new PrintWriter(uscript);
+            String imodel = Tools.readResource("mq/create_replace_queue.mustache");
+            String umodel = Tools.readResource("mq/delete_queue.mustache");
 
-            String imodel = getFile("mq/create_replace_queue.mustache");
-            String umodel = getFile("mq/delete_queue.mustache");
-
-            ArrayList<File> flows = Tools.searchFiles(root, "msgflow");
-            ArrayList<File> subf = Tools.searchFiles(root, "subflow");
-            flows.addAll(subf);
-            String[] queues = searchQueues(flows);
             for (String queue : queues) {
                 getLog().info(" SCRIPTING QUEUE " + queue);
                 Properties props = new Properties();
                 props.put("QUEUE_NAME", queue);
-                try {
-                    String installationq = Tools.template(imodel, props, null);
-                    String unstallq = Tools.template(umodel, props, null);
-                    prin.println(installationq);
-                    prun.println(unstallq);
-                    prin.flush();
-                    prun.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                prin.println(Tools.template(imodel, props, null));
+                prun.println(Tools.template(umodel, props, null));
             }
-            prin.close();
-            prun.close();
-        } catch (IOException e1) {
-
-            e1.printStackTrace();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to write MQ scripts: " + e.getMessage(), e);
         }
-
+        getLog().info("MQ scripts written to " + iscript + " and " + uscript);
     }
 
-    public String getFile(String fileName) throws IOException {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        try (InputStream inputStream = classLoader.getResourceAsStream(fileName)) {
-
-            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-
-        }
-    }
-
-    private String[] searchQueues(ArrayList<File> flows) {
-        StringBuilder sb = new StringBuilder();
+    private Set<String> searchQueues(List<File> flows) throws MojoExecutionException {
+        Set<String> queues = new TreeSet<>();
         for (File file : flows) {
-
-            MessageFlow mf;
             try {
-                mf = FlowRendererMSGFLOW.read(file);
-                Vector<Node> nodes = mf.getNodes();
-                nodes.forEach(node -> {
+                MessageFlow mf = FlowRendererMSGFLOW.read(file);
+                for (Node node : mf.getNodes()) {
                     if (node instanceof MQInputNode || node instanceof MQOutputNode) {
-                        String queueName = (String) node.getPropertyValue("queueName");
-                        sb.append(queueName + ",");
-
+                        Object queueName = node.getPropertyValue("queueName");
+                        if (queueName != null && !queueName.toString().trim().isEmpty()) {
+                            queues.add(queueName.toString().trim());
+                        }
                     }
-                });
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new MojoExecutionException("Unable to read flow " + file + ": " + e.getMessage(), e);
             }
-
         }
-        return sb.toString().split(",");
-
+        return queues;
     }
 
 }

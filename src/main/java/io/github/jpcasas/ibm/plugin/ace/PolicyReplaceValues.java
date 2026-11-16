@@ -1,19 +1,17 @@
 package io.github.jpcasas.ibm.plugin.ace;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+import java.util.TreeMap;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -23,9 +21,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import io.github.jpcasas.ibm.plugin.utils.XmlUtils;
 
 @Mojo(name = "ace-policy-replace", requiresProject = false)
 public class PolicyReplaceValues extends AbstractMojo {
@@ -38,81 +37,69 @@ public class PolicyReplaceValues extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        boolean error = false;
-        String message = null;
         getLog().info("----------------------------------------------------");
-        getLog().info("   ACE - MODYFING PROPERTIES IN POLICY            ");
+        getLog().info("   ACE - MODIFYING PROPERTIES IN POLICY             ");
         getLog().info("----------------------------------------------------");
         getLog().info(" ");
 
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-
         Properties props = new Properties();
-        try {
-            props.load(new FileReader(propertiesFile));
-
-            Set<Object> keys = props.keySet();
-            for (Object object : keys) {
-
-                String key = (String) object;
-                String[] split = key.split("\\.");
-                if (split.length > 1) {
-                    try {
-                        String fileName = split[0];
-                        File xmlpolicy = new File(projectFile, fileName + ".policyxml");
-                        if (xmlpolicy.exists()) {
-                            getLog().info(" READING POLICY " + xmlpolicy);
-                            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                            Document doc;
-
-                            doc = dBuilder.parse(xmlpolicy);
-
-                            doc.getDocumentElement().normalize();
-                            NodeList nList = doc.getElementsByTagName(split[1]);
-                            if (nList.getLength() > 0) {
-                                Node toModify = nList.item(0);
-                                String val = props.getProperty(key);
-                                getLog().info(" OVERRITING " + split[1] + " VALUE = " + val);
-                                toModify.setTextContent(val);
-                            }
-                            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
-                            Transformer transformer = transformerFactory.newTransformer();
-                            DOMSource domSource = new DOMSource(doc);
-
-                            StreamResult streamResult = new StreamResult(xmlpolicy);
-                            transformer.transform(domSource, streamResult);
-                            getLog().info("OVERRIDE OK");
-                        }
-                    } catch (SAXException e) {
-                        error = true;
-                        message = e.getMessage();
-                    } catch (ParserConfigurationException e) {
-                        error = true;
-                        message = e.getMessage();
-                    } catch (TransformerConfigurationException e) {
-                        error = true;
-                        message = e.getMessage();
-                    } catch (TransformerException e) {
-                        error = true;
-                        message = e.getMessage();
-                    }
-
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            error = true;
-            message = e.getMessage();
+        try (Reader in = Files.newBufferedReader(propertiesFile.toPath(), StandardCharsets.UTF_8)) {
+            props.load(in);
         } catch (IOException e) {
-            error = true;
-            message = e.getMessage();
+            throw new MojoExecutionException("Unable to read " + propertiesFile + ": " + e.getMessage(), e);
+        }
+
+        // group the overrides by policy file so each file is parsed and written once
+        Map<String, Map<String, String>> byPolicy = new TreeMap<>();
+        for (String key : props.stringPropertyNames()) {
+            int dot = key.indexOf('.');
+            if (dot > 0 && dot < key.length() - 1) {
+                String policyName = key.substring(0, dot);
+                if (!isSafePolicyName(policyName)) {
+                    throw new MojoExecutionException("Invalid policy name '" + policyName + "' in " + propertiesFile
+                            + ": it must be a file name without path separators");
+                }
+                byPolicy.computeIfAbsent(key.substring(0, dot), k -> new TreeMap<>()).put(key.substring(dot + 1),
+                        props.getProperty(key));
+            }
+        }
+
+        for (Map.Entry<String, Map<String, String>> policy : byPolicy.entrySet()) {
+            File xmlpolicy = new File(projectFile, policy.getKey() + ".policyxml");
+            if (!xmlpolicy.exists()) {
+                getLog().debug("Policy file not found, skipping: " + xmlpolicy);
+                continue;
+            }
+            getLog().info(" READING POLICY " + xmlpolicy);
+            try {
+                Document doc = XmlUtils.newDocumentBuilder().parse(xmlpolicy);
+                doc.getDocumentElement().normalize();
+                boolean changed = false;
+                for (Map.Entry<String, String> value : policy.getValue().entrySet()) {
+                    NodeList nList = doc.getElementsByTagName(value.getKey());
+                    if (nList.getLength() > 0) {
+                        getLog().info(" OVERWRITING " + value.getKey() + " VALUE = " + value.getValue());
+                        nList.item(0).setTextContent(value.getValue());
+                        changed = true;
+                    } else {
+                        getLog().warn(" Property " + value.getKey() + " not found in " + xmlpolicy.getName());
+                    }
+                }
+                if (changed) {
+                    Transformer transformer = XmlUtils.newTransformerFactory().newTransformer();
+                    transformer.transform(new DOMSource(doc), new StreamResult(xmlpolicy));
+                    getLog().info("OVERRIDE OK");
+                }
+            } catch (SAXException | ParserConfigurationException | TransformerException | IOException e) {
+                throw new MojoExecutionException("Unable to update " + xmlpolicy + ": " + e.getMessage(), e);
+            }
         }
 
         getLog().info("-------------------------END------------------------");
-        if (error) {
-            throw new MojoExecutionException(message);
-        }
+    }
 
+    /** The policy name becomes a file name: path separators would allow writing outside the project. */
+    static boolean isSafePolicyName(String name) {
+        return !name.isEmpty() && name.indexOf('/') < 0 && name.indexOf('\\') < 0 && name.indexOf('\0') < 0;
     }
 }

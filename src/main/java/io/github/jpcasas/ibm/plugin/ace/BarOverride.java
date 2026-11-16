@@ -42,27 +42,28 @@ public class BarOverride extends AbstractMojo {
 		List<File> bars = null;
 
 		if (barFileName == null) {
-			bars = (List<File>) FileUtils.listFiles(new File("."), new String[] { "bar" }, true);
+			bars = new ArrayList<>(FileUtils.listFiles(new File("."), new String[] { "bar" }, true));
 
 		} else {
 			bars = new ArrayList<File>();
 			bars.add(barFileName);
 		}
 
+		if (!overrideFile.exists()) {
+			getLog().info("NO PROPERTIES FOR PROFILE " + overrideFile);
+			if (validate) {
+				throw new MojoFailureException("Override file not found: " + overrideFile);
+			}
+			return;
+		}
 		for (File bar : bars) {
 			getLog().info("OVERRIDE BAR FILE " + bar.getName());
 			// String artifactId = FilenameUtils.removeExtension(bar.getName());
 			String[] args = new String[] { "-b", bar.getAbsolutePath(),
 					// "-k", artifactId,
 					"-p", overrideFile.getAbsolutePath(), "-runtime", "-r" };
-			if (overrideFile.exists()) {
-				getLog().info("APPLING PROPERTIES " + overrideFile.getName());
-				ApplyBarOverride.execute(args);
-			} else {
-				getLog().info("NOT PROPERTIES FOR PROFILE " + overrideFile);
-				if (validate)
-					throw new MojoFailureException("No override file found it");
-			}
+			getLog().info("APPLYING PROPERTIES " + overrideFile.getName());
+			ApplyBarOverride.execute(args);
 		}
 
 	}

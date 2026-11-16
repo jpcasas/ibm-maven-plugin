@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      jackson:
+        patterns: ["com.fasterxml.jackson*"]
+      bouncycastle:
+        patterns: ["org.bouncycastle*"]
+      maven-plugins:
+        patterns: ["org.apache.maven.plugins*", "org.apache.maven.plugin-tools*"]
+    ignore:
+      # provided by the Maven runtime: keep the minimum supported API
+      - dependency-name: "org.apache.maven:*"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
